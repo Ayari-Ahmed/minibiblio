@@ -1,0 +1,42 @@
+{% if livres|length > 0 %}
+    <div class="books-grid">
+        {% for livre in livres %}
+            <div class="book-card">
+                <div class="book-header">
+                    <h3 class="book-title">{{ livre.title }}</h3>
+                    <div class="book-actions">
+                        <a href="{{ path('app_livre_show', {'id': livre.id}) }}" class="btn btn-outline-primary" title="View details">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ path('app_livre_edit', {'id': livre.id}) }}" class="btn btn-outline-primary" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form method="post" action="{{ path('app_livre_delete', {'id': livre.id}) }}" onsubmit="return confirmDelete(event, 'delete-form-{{ livre.id }}');" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ livre.id) }}">
+                            <button class="btn btn-outline-danger" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="book-meta">
+                    <i class="fas fa-user me-1"></i>{{ livre.author }}
+                    <span class="mx-2">•</span>
+                    <i class="fas fa-calendar me-1"></i>{{ livre.publishedAt ? livre.publishedAt|date('d M Y') : 'Not published' }}
+                </div>
+                <div class="book-description">
+                    {{ livre.description }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <i class="fas fa-book-open"></i>
+        <h3>No books found</h3>
+        <p>Start by adding your first book to the library</p>
+        <a href="{{ path('app_livre_new') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Add a book
+        </a>
+    </div>
+{% endif %} 

@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Book - MiniBiblio{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .form-container {
+            background: var(--light-color);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .form-header {
+            margin-bottom: 2rem;
+        }
+
+        .form-header i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .form-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            color: var(--text-light);
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .btn-outline-secondary {
+            border-color: var(--border-color);
+            color: var(--text-color);
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--light-color);
+            border-color: var(--border-color);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+        <div class="sidebar-header">
+            <a href="{{ path('app_livre_index') }}" class="sidebar-brand">
+                <i class="fas fa-book-open"></i>
+                <span>MiniBiblio</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{{ path('app_livre_index') }}" class="sidebar-menu-item">
+                <i class="fas fa-th-large"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ path('app_livre_new') }}" class="sidebar-menu-item active">
+                <i class="fas fa-plus-circle"></i>
+                <span>New Book</span>
+            </a>
+            <a href="{{ path('app_livre_index') }}" class="sidebar-menu-item">
+                <i class="fas fa-book"></i>
+                <span>My Books</span>
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <a href="{{ path('app_logout') }}" class="sidebar-footer-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-link text-dark me-3 d-md-none" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ path('app_livre_index') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">New Book</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <div class="user-dropdown">
+                    <div class="user-avatar">
+                        {{ app.user.email|first|upper }}
+                    </div>
+                    <div class="d-none d-md-block">
+                        <div class="fw-medium">{{ app.user.email }}</div>
+                        <small class="text-muted">Administrator</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="dashboard-content">
+            <div class="form-container">
+                <div class="form-header">
+                    <i class="fas fa-plus-circle"></i>
+                    <h1>Add a New Book</h1>
+                    <p>Fill in the details below to add a new book to your library</p>
+                </div>
+
+                {{ include('livre/_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                document.body.classList.toggle('sidebar-open');
+            });
+        }
+    });
+</script>
+{% endblock %}

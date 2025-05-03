@@ -1,0 +1,285 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - MiniBiblio{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+/* Auth Styles */
+:root {
+    --primary-color: #000000;
+    --secondary-color: #333333;
+    --dark-color: #111111;
+    --light-color: #ffffff;
+    --accent-color: #666666;
+    --text-color: #000000;
+    --text-light: #666666;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.2);
+    --shadow-lg: 0 8px 16px rgba(0,0,0,0.2);
+    --transition: all 0.3s ease;
+}
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #000000, #333333);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://picsum.photos/1920/1080?random=4') center/cover;
+    opacity: 0.05;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 450px;
+    padding: 3rem;
+    position: relative;
+    z-index: 1;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.auth-logo {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.auth-title {
+    font-size: 1.8rem;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-control {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-label {
+    position: absolute;
+    left: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    transition: var(--transition);
+    pointer-events: none;
+    background: transparent;
+    padding: 0 0.5rem;
+}
+
+.form-control:focus + .form-label,
+.form-control:not(:placeholder-shown) + .form-label {
+    top: 0;
+    transform: translateY(-50%) scale(0.9);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--primary-color);
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: none;
+}
+
+.alert-danger {
+    background: rgba(0, 0, 0, 0.05);
+    color: #000000;
+    border-left: 4px solid #000000;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.form-check-input {
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-check-label {
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.btn-auth {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: var(--text-light);
+}
+
+.auth-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.auth-link:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+    .auth-card {
+        padding: 2rem;
+    }
+    
+    .auth-title {
+        font-size: 1.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <h1 class="auth-title">Créer un compte</h1>
+            <p class="auth-subtitle">Rejoignez notre bibliothèque d'exception</p>
+        </div>
+
+        {{ form_start(registrationForm, {'attr': {'class': 'auth-form'}}) }}
+            <div class="form-group">
+                {{ form_widget(registrationForm.email, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(registrationForm.email, 'Adresse e-mail', {
+                    'label_attr': {
+                        'class': 'form-label'
+                    }
+                }) }}
+                {{ form_errors(registrationForm.email) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_widget(registrationForm.plainPassword, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(registrationForm.plainPassword, 'Mot de passe', {
+                    'label_attr': {
+                        'class': 'form-label'
+                    }
+                }) }}
+                {{ form_errors(registrationForm.plainPassword) }}
+            </div>
+
+            <div class="form-check">
+                {{ form_widget(registrationForm.agreeTerms, {
+                    'attr': {
+                        'class': 'form-check-input'
+                    }
+                }) }}
+                {{ form_label(registrationForm.agreeTerms, 'J\'accepte les conditions d\'utilisation', {
+                    'label_attr': {
+                        'class': 'form-check-label'
+                    }
+                }) }}
+                {{ form_errors(registrationForm.agreeTerms) }}
+            </div>
+
+            <button type="submit" class="btn-auth btn-primary">
+                <i class="fas fa-user-plus me-2"></i>
+                S'inscrire
+            </button>
+
+            <div class="auth-footer">
+                <p>Déjà un compte ? 
+                    <a href="{{ path('app_login') }}" class="auth-link">Se connecter</a>
+                </p>
+            </div>
+        {{ form_end(registrationForm) }}
+    </div>
+</div>
+{% endblock %}

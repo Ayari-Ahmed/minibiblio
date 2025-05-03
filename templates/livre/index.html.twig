@@ -1,0 +1,396 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Library - MiniBiblio{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--light-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .search-box {
+            position: relative;
+            background: var(--light-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--light-color);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            pointer-events: none;
+        }
+
+        .search-loading {
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
+        }
+
+        .search-loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .book-card {
+            background: var(--light-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .book-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .book-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .book-meta {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .book-description {
+            color: var(--text-color);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .book-actions .btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .book-actions .btn i {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .book-actions form {
+            margin: 0;
+        }
+
+        .book-actions .btn-outline-danger {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .book-actions .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: var(--light-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+        <div class="sidebar-header">
+            <a href="{{ path('app_livre_index') }}" class="sidebar-brand">
+                <i class="fas fa-book-open"></i>
+                <span>MiniBiblio</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{{ path('app_livre_index') }}" class="sidebar-menu-item">
+                <i class="fas fa-th-large"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ path('app_livre_new') }}" class="sidebar-menu-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>New Book</span>
+            </a>
+            <a href="{{ path('app_livre_index') }}" class="sidebar-menu-item">
+                <i class="fas fa-book"></i>
+                <span>My Books</span>
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <a href="{{ path('app_logout') }}" class="sidebar-footer-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-link text-dark me-3 d-md-none" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active">Dashboard</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <div class="user-dropdown">
+                    <div class="user-avatar">
+                        {{ app.user.email|first|upper }}
+                    </div>
+                    <div class="d-none d-md-block">
+                        <div class="fw-medium">{{ app.user.email }}</div>
+                        <small class="text-muted">Administrator</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="dashboard-content">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-value">{{ livres|length }}</div>
+                    <div class="stat-label">Total Books</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Administrator</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="stat-value">{{ "now"|date("Y") }}</div>
+                    <div class="stat-label">Current Year</div>
+                </div>
+            </div>
+
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       class="search-input" 
+                       placeholder="Search for a book..." 
+                       id="searchInput"
+                       value="{{ search }}"
+                       autocomplete="off">
+                <div class="search-loading">
+                    <i class="fas fa-spinner"></i>
+                </div>
+            </div>
+
+            <div id="bookList">
+                {{ include('livre/_book_list.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                document.body.classList.toggle('sidebar-open');
+            });
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        const bookList = document.getElementById('bookList');
+        const searchLoading = document.querySelector('.search-loading');
+        let searchTimeout;
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchLoading.style.display = 'block';
+
+                searchTimeout = setTimeout(() => {
+                    const searchTerm = this.value.trim();
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('search', searchTerm);
+
+                    fetch(url.toString(), {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        bookList.innerHTML = html;
+                        searchLoading.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        searchLoading.style.display = 'none';
+                    });
+                }, 300);
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(event, formId) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This action cannot be undone!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#000000',
+                cancelButtonColor: '#666666',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    popup: 'border-radius-12',
+                    confirmButton: 'btn btn-primary',
+                    cancelButton: 'btn btn-outline-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(formId).submit();
+                }
+            });
+        }
+    </script>
+{% endblock %}

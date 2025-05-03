@@ -1,0 +1,340 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ livre.title }} - MiniBiblio{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        .book-details {
+            background: var(--light-color);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .book-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .book-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .book-meta {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+        }
+
+        .meta-item i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .book-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .book-description {
+            background: rgba(0, 0, 0, 0.02);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .book-description h6 {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .book-description p {
+            color: var(--text-color);
+            line-height: 1.8;
+            margin-bottom: 0;
+        }
+
+        .book-info {
+            background: rgba(0, 0, 0, 0.02);
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+
+        .info-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            color: var(--text-light);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .btn-icon i {
+            font-size: 1rem;
+        }
+
+        .book-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(0, 0, 0, 0.03);
+            color: var(--text-light);
+        }
+
+        .book-status i {
+            margin-right: 0.5rem;
+        }
+
+        @media (max-width: 992px) {
+            .book-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .btn-group .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-group .btn i {
+            font-size: 14px;
+        }
+
+        .btn-group form {
+            margin: 0;
+        }
+
+        .btn-group .btn-outline-danger {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-group .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+        <div class="sidebar-header">
+            <a href="{{ path('app_livre_index') }}" class="sidebar-brand">
+                <i class="fas fa-book-open"></i>
+                <span>MiniBiblio</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{{ path('app_livre_index') }}" class="sidebar-menu-item">
+                <i class="fas fa-th-large"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ path('app_livre_new') }}" class="sidebar-menu-item">
+                <i class="fas fa-plus-circle"></i>
+                <span>New Book</span>
+            </a>
+            <a href="{{ path('app_livre_index') }}" class="sidebar-menu-item">
+                <i class="fas fa-book"></i>
+                <span>My Books</span>
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <a href="{{ path('app_logout') }}" class="sidebar-footer-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-link text-dark me-3 d-md-none" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ path('app_livre_index') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">{{ livre.title }}</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <div class="user-dropdown">
+                    <div class="user-avatar">
+                        {{ app.user.email|first|upper }}
+                    </div>
+                    <div class="d-none d-md-block">
+                        <div class="fw-medium">{{ app.user.email }}</div>
+                        <small class="text-muted">Administrator</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="dashboard-content">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="h3 mb-0">{{ livre.title }}</h1>
+                        <div class="btn-group">
+                            <a href="{{ path('app_livre_edit', {'id': livre.id}) }}" class="btn btn-outline-primary">
+                                <i class="fas fa-edit"></i>
+                                <span>Edit</span>
+                            </a>
+                            <form method="post" action="{{ path('app_livre_delete', {'id': livre.id}) }}" onsubmit="return confirmDelete(event, 'delete-form-{{ livre.id }}');" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ livre.id) }}">
+                                <button class="btn btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="book-details">
+                                <div class="book-meta mb-4">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-user me-2 text-muted"></i>
+                                        <span class="text-muted">Author:</span>
+                                        <span class="ms-2">{{ livre.author }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-calendar me-2 text-muted"></i>
+                                        <span class="text-muted">Publication Date:</span>
+                                        <span class="ms-2">{{ livre.publishedAt ? livre.publishedAt|date('d M Y') : 'Not published' }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="book-description">
+                                    <h5 class="mb-3">Description</h5>
+                                    <p class="text-muted">{{ livre.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="book-cover">
+                                <div class="cover-placeholder">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                document.body.classList.toggle('sidebar-open');
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(event, formId) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This action cannot be undone!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#000000',
+                cancelButtonColor: '#666666',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    popup: 'border-radius-12',
+                    confirmButton: 'btn btn-primary',
+                    cancelButton: 'btn btn-outline-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(formId).submit();
+                }
+            });
+        }
+    </script>
+{% endblock %}

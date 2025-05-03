@@ -1,0 +1,32 @@
+<form method="post" action="{{ path('app_livre_delete', {'id': livre.id}) }}" id="delete-form-{{ livre.id }}" onsubmit="return confirmDelete(event, 'delete-form-{{ livre.id }}');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ livre.id) }}">
+    <button type="submit" class="btn btn-outline-danger">
+        <i class="fas fa-trash-alt me-2"></i>Supprimer
+    </button>
+</form>
+
+<script>
+function confirmDelete(event, formId) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: "Cette action est irréversible. Le livre sera définitivement supprimé.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#000000',
+        cancelButtonColor: '#666666',
+        confirmButtonText: 'Oui, supprimer',
+        cancelButtonText: 'Annuler',
+        customClass: {
+            popup: 'border-radius-12',
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-outline-secondary'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById(formId).submit();
+        }
+    });
+    return false;
+}
+</script>

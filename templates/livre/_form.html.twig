@@ -1,0 +1,66 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                {{ form_widget(form.title, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.title, 'Title', {'label_attr': {'class': 'form-label'}}) }}
+                <div class="invalid-feedback">
+                    Please enter a book title.
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                {{ form_widget(form.author, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.author, 'Author', {'label_attr': {'class': 'form-label'}}) }}
+                <div class="invalid-feedback">
+                    Please enter an author name.
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-floating mb-3">
+                {{ form_widget(form.description, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' ',
+                        'style': 'height: 150px;'
+                    }
+                }) }}
+                {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                <div class="invalid-feedback">
+                    Please enter a description.
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                {{ form_widget(form.publishedAt, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.publishedAt, 'Publication Date', {'label_attr': {'class': 'form-label'}}) }}
+            </div>
+        </div>
+    </div>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+        <a href="{{ path('app_livre_index') }}" class="btn btn-outline-secondary me-md-2">
+            <i class="fas fa-arrow-left me-2"></i>Back to list
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-2"></i>{{ button_label|default('Save') }}
+        </button>
+    </div>
+{{ form_end(form) }}
