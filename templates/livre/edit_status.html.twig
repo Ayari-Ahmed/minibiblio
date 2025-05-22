@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Order Status - MiniBiblio{% endblock %}
+
+{% block body %}
+    <main class="main-content">
+        <div class="container">
+            <section class="cart-section">
+                <div class="section-header">
+                    <h3>Edit Order Status</h3>
+                    <p>Change the status of order {{ order.id }}</p>
+                    <div class="shelf-decoration"></div>
+                </div>
+
+                <div class="cart-grid">
+                    <div class="cart-items">
+                        <form method="post">
+                            <div class="form-group">
+                                <label for="status">Status:</label>
+                                <select class="form-control" name="status" id="status">
+                                    {% for status in statuses %}
+                                        <option value="{{ status }}" {% if status == order.status %}selected{% endif %}>{{ status }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Update Status</button>
+                            <a href="{{ path('app_livre_index') }}" class="btn btn-outline-secondary">Cancel</a>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+{% endblock %}

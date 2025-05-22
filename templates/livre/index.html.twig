@@ -317,6 +317,39 @@
             <div id="bookList">
                 {{ include('livre/_book_list.html.twig') }}
             </div>
+
+            <h2>Orders</h2>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>User</th>
+                        <th>CreatedAt</th>
+                        <th>Status</th>
+                        <th>Total Price</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.user.email }}</td>
+                            <td>{{ order.createdAt|date('Y-m-d H:i:s') }}</td>
+                            <td>{{ order.status }}</td>
+                            <td>{{ order.totalPrice }}</td>
+                            <td>
+                                <a href="{{ path('app_livre_edit_status', {'id': order.id}) }}">Edit Status</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6">no records found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -350,7 +383,12 @@
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     })
-                    .then(response => response.text())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
                     .then(html => {
                         bookList.innerHTML = html;
                         searchLoading.style.display = 'none';

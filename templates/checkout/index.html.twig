@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Checkout</h1>
+        
+        {% if items|length > 0 %}
+            <div class="cart-grid">
+                <div class="cart-items">
+                    {% for item in items %}
+                        <div class="cart-item">
+                            <div class="cart-item-details">
+                                <h4 class="book-title">{{ item.product.title }}</h4>
+                                <p class="book-author">par {{ item.product.author }}</p>
+                                <p>Quantity: {{ item.quantity }}</p>
+                                <p>Price: €{{ item.product.price|number_format(2) }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="cart-sidebar">
+                    <div class="cart-summary">
+                        <h4>Summary</h4>
+                        <div class="summary-content">
+                            <div class="summary-item">
+                                <span>Items:</span>
+                                <span>{{ totalQuantity }}</span>
+                            </div>
+                            <div class="summary-item total">
+                                <span>Total:</span>
+                                <span>€{{ total|number_format(2) }}</span>
+                            </div>
+                        </div>
+                        <div class="summary-actions">
+                            <a href="{{ path('app_checkout') }}" class="btn btn-primary">Finalize Purchase</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+{% endblock %}

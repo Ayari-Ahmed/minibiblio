@@ -9,7 +9,7 @@
         <div class="header-content">
             <div class="logo">
                 <h1>MiniBiblio</h1>
-                <p class="tagline">Votre bibliothèque d'exception</p>
+                <p class="tagline">Œuvres d'élite, sélection d'élite</p>
             </div>
             <nav class="main-nav">
                 <ul>
@@ -17,20 +17,31 @@
                     <li><a href="#">Livres</a></li>
                     <li><a href="#">Catégories</a></li>
                     <li><a href="#">Nouveautés</a></li>
-                    <li><a href="#">À propos</a></li>
+                    <li><a href="/cart">Panier <span class="cart-badge">{{ totalQuantity|default(0) }}</span></a></li>
                 </ul>
             </nav>
             <div class="header-search">
                 <div class="search-container">
-                    <input type="text" placeholder="Rechercher un livre..." class="search-input">
+                    <input type="text" placeholder="Trouver un chef-d'œuvre..." class="search-input">
                     <button class="search-button">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
             </div>
             <div class="header-actions">
-                <a href="/login" class="btn btn-outline">Se connecter</a>
-                <a href="/register" class="btn btn-primary">S'inscrire</a>
+                {% if app.user %}
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="user-name" title="{{ app.user.email }}">{{ app.user.email|split('@')[0]|capitalize }}</span>
+                    
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline" data-tooltip="Déconnexion">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-outline">Connexion</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-primary">Inscription</a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -42,28 +53,34 @@
         <!-- Hero Section -->
         <section class="hero-section">
             <div class="hero-content">
-                <h2>Découvrez l'Univers des Livres</h2>
-                <p>Une collection exceptionnelle de plus de 10,000 ouvrages à portée de main</p>
+                <h2>Plongez dans l'Élite Littéraire</h2>
+                <p>Une collection soigneusement curée de plus de 10,000 ouvrages d’exception</p>
                 <div class="hero-stats">
-                    <div class="stat-item">
+                    <div class="stat-item" data-tooltip="Livres disponibles">
                         <i class="fas fa-book"></i>
                         <span class="stat-number">10,000+</span>
                         <span class="stat-label">Livres</span>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item" data-tooltip="Membres actifs">
                         <i class="fas fa-users"></i>
                         <span class="stat-number">5,000+</span>
                         <span class="stat-label">Membres</span>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item" data-tooltip="Évaluation moyenne">
                         <i class="fas fa-star"></i>
                         <span class="stat-number">4.8</span>
-                        <span class="stat-label">Note moyenne</span>
+                        <span class="stat-label">Note</span>
                     </div>
                 </div>
                 <div class="hero-cta">
                     <a href="#" class="btn btn-primary btn-large">Explorer la Collection</a>
-                    <a href="#" class="btn btn-outline btn-large">Découvrir les Nouveautés</a>
+                    <a href="#" class="btn btn-outline2 btn-large">Découvrir les Nouveautés</a>
+                </div>
+                <div class="featured-author">
+                    <p class="author-label">Auteur du mois</p>
+                    <h4>Virginia Woolf</h4>
+                    <p class="author-bio">Découvrez ses œuvres intemporelles, disponibles dès maintenant.</p>
+                    <a href="#" class="author-link">Voir la Collection</a>
                 </div>
             </div>
             <div class="hero-image">
@@ -75,16 +92,16 @@
         <section class="categories-section">
             <div class="section-header">
                 <h3>Nos Catégories</h3>
-                <p>Explorez notre collection par catégorie</p>
+                <p>Explorez notre collection par univers littéraire</p>
                 <div class="shelf-decoration"></div>
             </div>
             <div class="categories-grid">
-                <div class="category-card">
+                <div class="category-card" data-tooltip="Romans captivants">
                     <div class="category-icon">
                         <i class="fas fa-book-open"></i>
                     </div>
                     <h4>Romans</h4>
-                    <p>Découvrez nos meilleurs romans</p>
+                    <p>Des récits épiques et intimes</p>
                     <div class="category-stats">
                         <span>500+ livres</span>
                         <span>•</span>
@@ -92,12 +109,12 @@
                     </div>
                     <a href="#" class="category-link">Explorer <i class="fas fa-arrow-right"></i></a>
                 </div>
-                <div class="category-card">
+                <div class="category-card" data-tooltip="Découvertes scientifiques">
                     <div class="category-icon">
                         <i class="fas fa-flask"></i>
                     </div>
                     <h4>Science</h4>
-                    <p>Explorez le monde scientifique</p>
+                    <p>Explorez l’univers et ses mystères</p>
                     <div class="category-stats">
                         <span>300+ livres</span>
                         <span>•</span>
@@ -105,12 +122,12 @@
                     </div>
                     <a href="#" class="category-link">Explorer <i class="fas fa-arrow-right"></i></a>
                 </div>
-                <div class="category-card">
+                <div class="category-card" data-tooltip="Récits historiques">
                     <div class="category-icon">
                         <i class="fas fa-history"></i>
                     </div>
                     <h4>Histoire</h4>
-                    <p>Plongez dans le passé</p>
+                    <p>Revivez les grandes époques</p>
                     <div class="category-stats">
                         <span>400+ livres</span>
                         <span>•</span>
@@ -118,12 +135,12 @@
                     </div>
                     <a href="#" class="category-link">Explorer <i class="fas fa-arrow-right"></i></a>
                 </div>
-                <div class="category-card">
+                <div class="category-card" data-tooltip="Pensées profondes">
                     <div class="category-icon">
                         <i class="fas fa-brain"></i>
                     </div>
                     <h4>Philosophie</h4>
-                    <p>Réfléchissez avec les grands penseurs</p>
+                    <p>Réflexions des grands esprits</p>
                     <div class="category-stats">
                         <span>200+ livres</span>
                         <span>•</span>
@@ -138,24 +155,38 @@
         <section class="featured-section">
             <div class="section-header">
                 <h3>Livres en Vedette</h3>
-                <p>Découvrez nos sélections du moment</p>
+                <p>Nos sélections du moment, triées sur le volet</p>
                 <div class="shelf-decoration"></div>
             </div>
             <div class="featured-carousel">
                 <div class="carousel-container">
                     {% for livre in livres|slice(0, 5) %}
                         <div class="featured-book">
-                            <div class="book-cover">
-                                <img src="https://picsum.photos/300/450?random={{ loop.index }}" alt="{{ livre.title }}">
-                                <div class="book-overlay"></div>
+                            <div class="">
+                                {# <img src="{{ livre.imageUrl|default('https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=' ~ livre.title|url_encode) }}"
+                                     alt="{{ livre.title }}"
+                                     class="book-image"
+                                     data-src="{{ livre.imageUrl|default('https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=' ~ livre.title|url_encode) }}"
+                                     onerror="this.src='https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=Image+Indisponible';"> #}
+                                {# <div class="book-overlay"></div> #}
                                 <div class="book-badge">Nouveau</div>
                                 <div class="book-actions">
-                                    <button class="action-btn favorite"><i class="fas fa-heart"></i></button>
-                                    <button class="action-btn share"><i class="fas fa-share-alt"></i></button>
+                                    <button class="action-btn favorite" data-tooltip="Ajouter aux favoris" >
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                    <button class="action-btn share" data-tooltip="Partager">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                    <form action="{{ path('cart_add', {'id': livre.id}) }}" method="post">
+                                        <button type="submit" class="action-btn cart" data-tooltip="Ajouter au panier">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
-                            <div class="book-info">
-                                <h4>{{ livre.title }}</h4>
+                            <div class="book-info mt-4" >
+                            
+                                <h4 class="book-title" data-tooltip="{{ livre.title }}">{{ livre.title }}</h4>
                                 <p class="book-author">{{ livre.author }}</p>
                                 <div class="book-rating">
                                     <div class="stars">
@@ -172,17 +203,65 @@
                                     <span class="meta-item"><i class="fas fa-calendar"></i> 2023</span>
                                 </div>
                                 <div class="book-description">
-                                    <p>Un roman captivant qui vous emmènera dans un voyage extraordinaire à travers les époques.</p>
+                                    <p>{{ livre.description|default('Un roman captivant qui vous emmènera dans un voyage extraordinaire.') }}</p>
                                 </div>
-                                <a href="{{ path('book_details', {id: livre.id}) }}" class="btn btn-primary">Voir les détails</a>
+                                <a href="{{ path('book_details', {'id': livre.id}) }}" class="btn btn-primary">Voir les détails</a>
                             </div>
                         </div>
+                    {% else %}
+                        <!-- Fallback if livres is empty -->
+                        {% for i in 1..5 %}
+                            <div class="featured-book">
+                                <div class="book-cover">
+                                    <img src="https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=Livre+Exemple+{{ i }}"
+                                         alt="Livre Exemple {{ i }}"
+                                         class="book-image"
+                                         data-src="https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=Livre+Exemple+{{ i }}"
+                                         onerror="this.src='https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=Image+Indisponible';">
+                                    <div class="book-overlay"></div>
+                                    <div class="book-badge">Nouveau</div>
+                                    <div class="book-actions">
+                                        <button class="action-btn favorite" data-tooltip="Ajouter aux favoris">
+                                            <i class="far fa-heart"></i>
+                                        </button>
+                                        <button class="action-btn share" data-tooltip="Partager">
+                                            <i class="fas fa-share-alt"></i>
+                                        </button>
+                                        <button class="action-btn cart" data-tooltip="Ajouter au panier" disabled>
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="book-info">
+                                    <h4 class="book-title" data-tooltip="Livre Exemple {{ i }}">Livre Exemple {{ i }}</h4>
+                                    <p class="book-author">Auteur Inconnu</p>
+                                    <div class="book-rating">
+                                        <div class="stars">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <span class="rating-count">(128)</span>
+                                    </div>
+                                    <div class="book-meta">
+                                        <span class="meta-item"><i class="fas fa-book-open"></i> 320 pages</span>
+                                        <span class="meta-item"><i class="fas fa-calendar"></i> 2023</span>
+                                    </div>
+                                    <div class="book-description">
+                                        <p>Un roman captivant qui vous emmènera dans un voyage extraordinaire.</p>
+                                    </div>
+                                    <a href="#" class="btn btn-primary" disabled>Voir les détails</a>
+                                </div>
+                            </div>
+                        {% endfor %}
                     {% endfor %}
                 </div>
                 <div class="carousel-controls">
-                    <button class="carousel-nav prev"><i class="fas fa-chevron-left"></i></button>
+                    <button class="carousel-nav prev" data-tooltip="Précédent"><i class="fas fa-chevron-left"></i></button>
                     <div class="carousel-dots"></div>
-                    <button class="carousel-nav next"><i class="fas fa-chevron-right"></i></button>
+                    <button class="carousel-nav next" data-tooltip="Suivant"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
         </section>
@@ -198,7 +277,7 @@
                 <div class="shelf-top"></div>
                 <div class="books-container">
                     {% for livre in livres %}
-                        <div class="book">
+                        <div class="book" data-tooltip="{{ livre.title }}">
                             <div class="book-spine">
                                 <div class="spine-content">
                                     <h4>{{ livre.title }}</h4>
@@ -207,11 +286,15 @@
                                 </div>
                             </div>
                             <div class="book-cover">
-                                <img src="https://picsum.photos/300/450?random={{ loop.index }}" alt="{{ livre.title }}">
+                                <img src="{{ livre.imageUrl|default('https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=' ~ livre.title|url_encode) }}"
+                                     alt="{{ livre.title }}"
+                                     class="book-image"
+                                     data-src="{{ livre.imageUrl|default('https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=' ~ livre.title|url_encode) }}"
+                                     onerror="this.src='https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=Image+Indisponible';">
                                 <div class="book-overlay"></div>
                                 <div class="book-pages"></div>
                             </div>
-                            <a href="{{ path('book_details', {id: livre.id}) }}" class="book-details">
+                            <a href="{{ path('book_details', {'id': livre.id}) }}" class="book-details">
                                 <span>Voir les détails</span>
                                 <i class="fas fa-book-open"></i>
                             </a>
@@ -231,27 +314,28 @@
                 <div class="newsletter-icon">
                     <i class="fas fa-envelope-open-text"></i>
                 </div>
-                <h3>Restez informé</h3>
-                <p>Inscrivez-vous à notre newsletter pour recevoir les dernières nouveautés et offres exclusives</p>
+                <h3>Restez au Cœur de la Littérature</h3>
+                <p>Recevez nos nouveautés et offres exclusives directement dans votre boîte de réception</p>
                 <form class="newsletter-form">
                     <input type="email" placeholder="Votre adresse email" required>
                     <button type="submit" class="btn btn-primary">
                         <span>S'inscrire</span>
                         <i class="fas fa-paper-plane"></i>
+                        <span class="form-loading" style="display: none;"><i class="fas fa-spinner fa-spin"></i></span>
                     </button>
                 </form>
                 <div class="newsletter-benefits">
-                    <div class="benefit-item">
+                    <div class="benefit-item" data-tooltip="Offres réservées">
                         <i class="fas fa-gift"></i>
                         <span>Offres exclusives</span>
                     </div>
-                    <div class="benefit-item">
+                    <div class="benefit-item" data-tooltip="Avant-premières">
                         <i class="fas fa-bell"></i>
-                        <span>Nouveautés en avant-première</span>
+                        <span>Nouveautés</span>
                     </div>
-                    <div class="benefit-item">
+                    <div class="benefit-item" data-tooltip="Promotions spéciales">
                         <i class="fas fa-percent"></i>
-                        <span>Réductions spéciales</span>
+                        <span>Réductions</span>
                     </div>
                 </div>
             </div>
@@ -265,12 +349,12 @@
         <div class="footer-content">
             <div class="footer-logo">
                 <h3>MiniBiblio</h3>
-                <p>Votre bibliothèque numérique d'exception</p>
+                <p>Œuvres d'élite, sélection d'élite</p>
                 <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" data-tooltip="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" data-tooltip="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" data-tooltip="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" data-tooltip="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
             <div class="footer-links">
@@ -299,7 +383,7 @@
                     <ul>
                         <li><a href="#">Abonnement Premium</a></li>
                         <li><a href="#">Programme de fidélité</a></li>
-                        <li><a href="#">Gift Cards</a></li>
+                        <li><a href="#">Cartes Cadeaux</a></li>
                         <li><a href="#">Événements</a></li>
                         <li><a href="#">Blog</a></li>
                     </ul>
@@ -307,15 +391,20 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; {{ "now"|date("Y") }} MiniBiblio. Tous droits réservés.</p>
+            <p>© {{ "now"|date("Y") }} MiniBiblio. Tous droits réservés.</p>
             <div class="payment-methods">
-                <i class="fab fa-cc-visa"></i>
-                <i class="fab fa-cc-mastercard"></i>
-                <i class="fab fa-cc-paypal"></i>
+                <i class="fab fa-cc-visa" data-tooltip="Visa"></i>
+                <i class="fab fa-cc-mastercard" data-tooltip="Mastercard"></i>
+                <i class="fab fa-cc-paypal" data-tooltip="PayPal"></i>
             </div>
         </div>
     </div>
 </footer>
+
+<!-- Back to Top Button -->
+<button class="back-to-top" data-tooltip="Retour en haut">
+    <i class="fas fa-chevron-up"></i>
+</button>
 {% endblock %}
 
 {% block stylesheets %}
@@ -323,17 +412,16 @@
 <style>
 /* Base Styles */
 :root {
-    --primary-color: #2C3E50;
-    --secondary-color: #34495E;
-    --dark-color: #1A252F;
-    --light-color: #ECF0F1;
-    --accent-color: #7F8C8D;
-    --text-color: #2C3E50;
-    --text-light: #7F8C8D;
-    --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 6px rgba(0,0,0,0.2);
-    --shadow-lg: 0 8px 16px rgba(0,0,0,0.2);
-    --transition: all 0.3s ease;
+    --black: #0D0D0D;
+    --white: #FFFFFF;
+    --gray-dark: #262626;
+    --gray: #595959;
+    --gray-light: #A6A6A6;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.12);
+    --shadow-md: 0 6px 16px rgba(0,0,0,0.18);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.22);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --border-radius: 8px;
 }
 
 * {
@@ -343,120 +431,238 @@
 }
 
 body {
-    font-family: 'Times New Roman', Times, serif;
-    line-height: 1.6;
-    color: var(--text-color);
-    background-color: #F8F9FA;
-    background-image: 
-        linear-gradient(90deg, rgba(44,62,80,0.05) 1px, transparent 1px),
-        linear-gradient(rgba(44,62,80,0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
+    font-family: 'Garamond', 'Georgia', serif;
+    line-height: 1.75;
+    color: var(--black);
+    background: var(--white);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 .container {
     width: 100%;
-    max-width: 1400px;
+    max-width: 1320px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
 }
+/* User Info Styles */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--black);
+    padding: 0.7rem 1.3rem;
+    border-radius: 24px;
+    box-shadow: var(--shadow-sm);
+    color: var(--white);
+    font-size: 0.97rem;
+    font-weight: 500;
+    transition: var(--transition);
+    border: 1.5px solid var(--gray-dark);
+    position: relative;
+}
+
+.user-info i {
+    font-size: 1.15rem;
+    color: var(--white);
+    background: var(--gray-dark);
+    border-radius: 50%;
+    padding: 0.35rem;
+    margin-right: 0.2rem;
+    transition: var(--transition);
+}
+
+.user-info .user-name {
+    color: var(--white);
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    margin-right: 0.7rem;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-info .btn-outline {
+    border-color: var(--white);
+    color: var(--white);
+    background: transparent;
+    padding: 0.4rem 1.1rem;
+    font-size: 0.92rem;
+    margin-left: 0.3rem;
+}
+
+.user-info .btn-outline:hover {
+    background: var(--white);
+    color: var(--black);
+}
+
 
 /* Button Styles */
 .btn {
-    display: inline-block;
-    padding: 0.8rem 1.5rem;
-    border-radius: 4px;
-    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1.8rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
     border: none;
-    text-align: center;
-    font-size: 1rem;
     text-decoration: none;
+    font-size: 0.95rem;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: 0.5s;
+    z-index: -1;
+}
+
+.btn:hover::before {
+    left: 100%;
 }
 
 .btn-primary {
-    background-color: var(--dark-color);
-    color: var(--light-color);
+    background: var(--black);
+    color: var(--white);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-color);
+    background: var(--gray-dark);
     transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-outline {
-    background-color: transparent;
-    border: 1px solid var(--light-color);
-    color: var(--light-color);
+    background: transparent;
+    border: 1.5px solid var(--white);
+    color: var(--white);
 }
 
 .btn-outline:hover {
-    background-color: var(--light-color);
-    color: var(--primary-color);
+    background: var(--white);
+    color: var(--black);
+    transform: translateY(-2px);
+}
+
+.btn-outline2 {
+    background: transparent;
+    border: 1.5px solid var(--black);
+    color: var(--black);
+}
+
+.btn-outline2:hover {
+    background: var(--black);
+    color: var(--white);
     transform: translateY(-2px);
 }
 
 .btn-large {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
+    padding: 1.1rem 2.4rem;
+    font-size: 1rem;
+}
+
+/* Tooltip Styles */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    transform: translateY(8px);
+    background: var(--black);
+    color: var(--white);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    z-index: 10;
+    pointer-events: none;
+}
+
+[data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-60%) translateY(4px);
 }
 
 /* Header Styles */
 .site-header {
-    background-color: var(--primary-color);
-    box-shadow: var(--shadow-md);
-    padding: 1.5rem 0;
+    background: var(--black);
+    padding: 1.8rem 0;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(12px);
 }
 
 .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 2rem;
+    gap: 2.2rem;
 }
 
 .logo h1 {
-    color: var(--light-color);
-    font-size: 2.5rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    margin-bottom: 0.5rem;
+    color: var(--white);
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
 }
 
 .tagline {
-    color: #BDC3C7;
+    color: var(--gray-light);
+    font-size: 0.85rem;
     font-style: italic;
-    font-size: 1rem;
+    letter-spacing: 0.6px;
+    margin-top: 0.2rem;
 }
 
 /* Navigation */
 .main-nav ul {
     display: flex;
-    gap: 2rem;
+    gap: 1.8rem;
     list-style: none;
 }
 
 .main-nav a {
-    color: var(--light-color);
+    color: var(--white);
     text-decoration: none;
-    font-size: 1rem;
-    transition: var(--transition);
-    padding: 0.5rem 0;
+    font-weight: 500;
+    font-size: 0.95rem;
     position: relative;
+    transition: var(--transition);
 }
 
 .main-nav a::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: -5px;
     left: 0;
     width: 100%;
-    height: 2px;
-    background: var(--light-color);
+    height: 1.5px;
+    background: var(--white);
     transform: scaleX(0);
-    transition: var(--transition);
+    transform-origin: center;
+    transition: transform 0.3s ease;
 }
 
 .main-nav a:hover::after,
@@ -464,10 +670,29 @@ body {
     transform: scaleX(1);
 }
 
+.cart-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: var(--gray-dark);
+    color: var(--white);
+    border-radius: 50%;
+    font-size: 0.75rem;
+    margin-left: 0.4rem;
+    transition: var(--transition);
+}
+
+.main-nav a:hover .cart-badge {
+    background: var(--white);
+    color: var(--black);
+}
+
 /* Search Bar */
 .header-search {
     flex: 1;
-    max-width: 400px;
+    max-width: 380px;
 }
 
 .search-container {
@@ -478,51 +703,54 @@ body {
 
 .search-input {
     width: 100%;
-    padding: 0.8rem 1rem;
-    padding-right: 3rem;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 4px;
-    background: rgba(255,255,255,0.1);
-    color: var(--light-color);
-    font-size: 1rem;
+    padding: 0.75rem 1.1rem;
+    padding-right: 2.8rem;
+    border: 1.5px solid var(--gray-light);
+    border-radius: var(--border-radius);
+    background: var(--white);
+    color: var(--black);
+    font-size: 0.9rem;
     transition: var(--transition);
 }
 
 .search-input::placeholder {
-    color: rgba(255,255,255,0.7);
+    color: var(--gray);
 }
 
 .search-input:focus {
     outline: none;
-    background: rgba(255,255,255,0.15);
-    border-color: rgba(255,255,255,0.3);
+    border-color: var(--black);
+    box-shadow: var(--shadow-sm);
+    transform: scale(1.01);
 }
 
 .search-button {
     position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-    padding: 0 1rem;
+    right: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
     background: transparent;
     border: none;
-    color: var(--light-color);
+    color: var(--gray);
     cursor: pointer;
+    font-size: 1rem;
     transition: var(--transition);
 }
 
 .search-button:hover {
-    color: #fff;
+    color: var(--black);
+    transform: translateY(-50%) scale(1.15);
 }
 
 /* Hero Section */
 .hero-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    gap: 3rem;
     align-items: center;
-    padding: 4rem 0;
+    padding: 5rem 0;
     position: relative;
+    overflow: hidden;
 }
 
 .hero-content {
@@ -530,69 +758,122 @@ body {
 }
 
 .hero-section h2 {
-    font-size: 3.5rem;
-    color: var(--dark-color);
-    margin-bottom: 1.5rem;
-    line-height: 1.2;
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 1.2rem;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
 }
 
 .hero-section p {
-    font-size: 1.2rem;
-    color: var(--text-light);
+    font-size: 1.1rem;
+    color: var(--gray);
     margin-bottom: 2rem;
+    letter-spacing: 0.3px;
 }
 
 .hero-stats {
     display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin: 2rem 0;
+    justify-content: flex-start;
+    gap: 2rem;
+    margin: 1.8rem 0;
 }
 
 .stat-item {
     text-align: center;
+    transition: var(--transition);
+}
+
+.stat-item:hover {
+    transform: translateY(-4px);
 }
 
 .stat-item i {
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+    color: var(--black);
+    margin-bottom: 0.4rem;
 }
 
 .stat-number {
     display: block;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--dark-color);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--black);
 }
 
 .stat-label {
-    color: var(--text-light);
-    font-size: 0.9rem;
+    color: var(--gray);
+    font-size: 0.85rem;
+    letter-spacing: 0.2px;
 }
 
 .hero-cta {
     display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
+    gap: 1.2rem;
+    margin-top: 1.8rem;
 }
 
 .hero-image {
     position: relative;
     height: 500px;
-    background: url('https://picsum.photos/800/600?random=1') center/cover;
-    border-radius: 8px;
+    background: url('https://placehold.co/800x600/0D0D0D/FFFFFF/png?text=Hero+Image') center/cover;
+    border-radius: var(--border-radius);
     box-shadow: var(--shadow-lg);
+    transform: translateZ(0);
+    transition: transform 0.5s ease;
 }
 
-.image-overlay {
+.hero-image::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, rgba(44,62,80,0.8), rgba(26,37,47,0.6));
-    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(0,0,0,0.2), rgba(0,0,0,0.4));
+    border-radius: var(--border-radius);
+    z-index: 1;
+}
+
+.featured-author {
+    margin-top: 2rem;
+    padding: 1.2rem;
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.author-label {
+    font-size: 0.85rem;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.featured-author h4 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--black);
+    margin: 0.4rem 0;
+}
+
+.author-bio {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 0.8rem;
+}
+
+.author-link {
+    font-size: 0.9rem;
+    color: var(--black);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.author-link:hover {
+    color: var(--gray-dark);
 }
 
 /* Categories Section */
@@ -603,25 +884,44 @@ body {
 
 .section-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 3.5rem;
 }
 
 .section-header h3 {
-    font-size: 2.5rem;
-    color: var(--dark-color);
-    margin-bottom: 1rem;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 0.6rem;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
 }
 
 .section-header p {
-    color: var(--text-light);
+    color: var(--gray);
     font-size: 1.1rem;
+    max-width: 650px;
+    margin: 0 auto;
+    letter-spacing: 0.3px;
 }
 
 .shelf-decoration {
     width: 100px;
-    height: 4px;
-    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
-    margin: 1rem auto;
+    height: 2px;
+    background: var(--black);
+    margin: 1.8rem auto;
+    position: relative;
+}
+
+.shelf-decoration::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 16px;
+    background: var(--black);
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
 
 .categories-grid {
@@ -631,14 +931,19 @@ body {
 }
 
 .category-card {
-    background: var(--light-color);
+    background: var(--white);
     padding: 2rem;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
     transition: var(--transition);
     cursor: pointer;
     position: relative;
     overflow: hidden;
+}
+
+.category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
 }
 
 .category-card::before {
@@ -647,8 +952,8 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    height: 3px;
+    background: var(--black);
     transform: scaleX(0);
     transition: var(--transition);
 }
@@ -658,116 +963,134 @@ body {
 }
 
 .category-icon {
-    width: 80px;
-    height: 80px;
-    background: var(--light-color);
+    width: 70px;
+    height: 70px;
+    background: var(--white);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1.5rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin: 0 auto 1.2rem;
+    box-shadow: var(--shadow-sm);
     transition: var(--transition);
 }
 
 .category-icon i {
-    font-size: 2rem;
-    color: var(--primary-color);
+    font-size: 1.8rem;
+    color: var(--black);
 }
 
 .category-card:hover .category-icon {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.category-card h4 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 0.6rem;
+}
+
+.category-card p {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
 }
 
 .category-stats {
-    margin-top: 1rem;
-    font-size: 0.8rem;
-    color: var(--text-light);
+    font-size: 0.85rem;
+    color: var(--gray);
 }
 
 .category-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    color: var(--primary-color);
+    gap: 0.4rem;
+    margin-top: 0.8rem;
+    color: var(--black);
     text-decoration: none;
     font-weight: 500;
     transition: var(--transition);
 }
 
 .category-link:hover {
-    color: var(--secondary-color);
-    transform: translateX(5px);
+    color: var(--gray-dark);
+    transform: translateX(4px);
 }
 
 /* Featured Books Section */
 .featured-section {
     margin: 4rem 0;
     padding: 2rem 0;
-    background: linear-gradient(to bottom, rgba(236, 240, 241, 0.1), rgba(236, 240, 241, 0.3));
-    border-radius: 8px;
     position: relative;
 }
 
 .featured-carousel {
     position: relative;
-    margin-top: 3rem;
-    padding: 0 4rem;
+    margin-top: 2.5rem;
+    padding: 0 3rem;
 }
 
 .carousel-container {
     display: flex;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     padding: 1rem 0;
     gap: 2rem;
-    position: relative;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.carousel-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 .featured-book {
-    flex: 0 0 350px;
-    background: var(--light-color);
-    border-radius: 12px;
+    flex: 0 0 320px;
+    background: var(--white);
+    border-radius: var(--border-radius);
     overflow: hidden;
     box-shadow: var(--shadow-md);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: var(--transition);
     display: flex;
     flex-direction: column;
-    opacity: 0.8;
-    transform: scale(0.95);
+    scroll-snap-align: start;
     position: relative;
-}
-
-.featured-book.active {
-    opacity: 1;
-    transform: scale(1);
+    z-index: 1;
 }
 
 .featured-book:hover {
-    transform: translateY(-5px) scale(1.02);
+    transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
 }
 
 .book-cover {
     position: relative;
-    height: 400px;
+    height: 360px;
     overflow: hidden;
-    background: var(--light-color);
-    z-index: 0;
+    border-radius: 6px 6px 0 0;
+    
 }
 
-.book-cover img {
+.book-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
-    will-change: transform;
+    object-position: center;
+    border-radius: 6px 6px 0 0;
+    filter: grayscale(100%);
+    transition: filter 0.4s ease, transform 0.4s ease;
     display: block;
     position: relative;
-    z-index: 0;
+    z-index: 1;
+}
+
+.featured-book:hover .book-image {
+    filter: grayscale(0%);
+    transform: scale(1.05);
 }
 
 .book-overlay {
@@ -777,135 +1100,147 @@ body {
     right: 0;
     bottom: 0;
     background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3));
-    transition: background 0.3s ease;
-    z-index: 1;
-    pointer-events: none;
+    border-radius: 6px 6px 0 0;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 2;
+}
+
+.featured-book:hover .book-overlay {
+    opacity: 1;
 }
 
 .book-badge {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--primary-color);
-    color: white;
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: transform 0.3s ease;
-    z-index: 2;
+    top: 12px;
+    right: 12px;
+    background: var(--black);
+    color: var(--white);
+    padding: 0.3rem 0.7rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    z-index: 3;
+}
+
+.featured-book:hover .book-badge {
+    transform: scale(1.1);
 }
 
 .book-actions {
     position: absolute;
-    top: 15px;
-    left: 15px;
+    top: 58px;
+    left: 160px;
     display: flex;
-    gap: 0.8rem;
-    transition: transform 0.3s ease;
-    z-index: 2;
-}
-
-.featured-book:hover .book-cover img {
-    transform: scale(1.02);
-}
-
-.featured-book:hover .book-overlay {
-    background: linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.35));
-}
-
-.featured-book:hover .book-badge {
-    transform: scale(1.05);
+    gap: 0.7rem;
+    z-index: 3;
 }
 
 .featured-book:hover .book-actions {
-    transform: scale(1.05);
+    transform: scale(1.1);
+    
 }
 
 .action-btn {
-    width: 35px;
-    height: 35px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.9);
-    border: none;
+    background: var(--white);
+    border: 1.5px solid var(--gray-light);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--primary-color);
+    transition: var(--transition);
+    color: var(--gray);
+    z-index: 3;
 }
 
 .action-btn:hover {
-    background: var(--light-color);
+    background: var(--black);
+    color: var(--white);
     transform: scale(1.1);
-    color: var(--dark-color);
+}
+
+.action-btn.favorite.active {
+    
+    color: var(--white);
+    background: var(--black);
+}
+
+.action-btn.cart {
+    background: var(--white);
+    color: var(--black);
+}
+
+.action-btn.cart:hover {
+    background: var(--black);
+    color: var(--white);
 }
 
 .book-info {
-    padding: 1.5rem;
+    padding: 1.4rem;
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-    position: relative;
-    z-index: 1;
-    background: var(--light-color);
+    gap: 0.7rem;
 }
 
-.book-info h4 {
-    font-size: 1.3rem;
-    color: var(--dark-color);
+.book-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--black);
     margin-bottom: 0.3rem;
-    line-height: 1.3;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.book-title:hover {
+    color: var(--gray-dark);
 }
 
 .book-author {
-    color: var(--text-light);
-    font-size: 0.9rem;
+    color: var(--gray);
+    font-size: 0.85rem;
     font-style: italic;
 }
 
 .book-rating {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin: 0.5rem 0;
+    gap: 0.4rem;
+    margin: 0.4rem 0;
 }
 
 .stars {
     color: #FFD700;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 .rating-count {
-    color: var(--text-light);
-    font-size: 0.8rem;
+    color: var(--gray);
+    font-size: 0.75rem;
 }
 
 .book-meta {
     display: flex;
     justify-content: space-between;
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-    color: var(--text-light);
-}
-
-.meta-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--gray);
 }
 
 .meta-item i {
-    color: var(--primary-color);
+    margin-right: 0.3rem;
 }
 
 .book-description {
-    margin: 0.8rem 0;
-    font-size: 0.9rem;
-    color: var(--text-light);
+    font-size: 0.85rem;
+    color: var(--gray);
     line-height: 1.5;
     flex: 1;
 }
@@ -914,66 +1249,47 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 2rem;
-    margin-top: 2rem;
+    gap: 1.8rem;
+    margin-top: 1.8rem;
 }
 
 .carousel-nav {
-    width: 45px;
-    height: 45px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    background: var(--primary-color);
-    color: var(--light-color);
+    background: var(--black);
+    color: var(--white);
     border: none;
     cursor: pointer;
     transition: var(--transition);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-sm);
 }
 
 .carousel-nav:hover {
-    background: var(--secondary-color);
+    background: var(--gray-dark);
     transform: scale(1.1);
 }
 
 .carousel-dots {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
 }
 
 .carousel-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: var(--accent-color);
+    background: var(--gray-light);
     cursor: pointer;
     transition: var(--transition);
 }
 
 .carousel-dot.active {
-    background: var(--primary-color);
-    transform: scale(1.2);
-}
-
-@media (max-width: 768px) {
-    .featured-book {
-        flex: 0 0 300px;
-    }
-
-    .book-cover {
-        height: 350px;
-    }
-
-    .carousel-nav {
-        width: 40px;
-        height: 40px;
-    }
-
-    .featured-carousel {
-        padding: 0 2rem;
-    }
+    background: var(--black);
+    transform: scale(1.3);
 }
 
 /* Bookshelf Section */
@@ -983,37 +1299,36 @@ body {
 
 .bookshelf {
     position: relative;
-    margin-top: 3rem;
+    margin-top: 2.5rem;
 }
 
 .shelf-top, .shelf-bottom {
-    height: 20px;
-    background: linear-gradient(180deg, #2C3E50, #1A252F);
+    height: 16px;
+    background: var(--black);
     border-radius: 4px;
-    margin: 0 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    margin: 0 8px;
+    box-shadow: var(--shadow-sm);
 }
 
 .shelf-bottom {
-    margin-top: 20px;
+    margin-top: 16px;
 }
 
 .books-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 1.2rem;
     justify-content: center;
-    perspective: 1000px;
-    padding: 2rem;
-    background-color: var(--primary-color);
-    border-radius: 4px;
-    min-height: 400px;
-    position: relative;
+    perspective: 1200px;
+    padding: 1.8rem;
+    background: linear-gradient(to bottom, var(--white), rgba(255,255,255,0.9));
+    border-radius: var(--border-radius);
+    min-height: 360px;
 }
 
 .book {
-    width: 200px;
-    height: 300px;
+    width: 180px;
+    height: 270px;
     position: relative;
     transform-style: preserve-3d;
     transition: var(--transition);
@@ -1021,26 +1336,26 @@ body {
 }
 
 .book:hover {
-    transform: translateY(-10px) rotateY(10deg);
+    transform: translateY(-8px) rotateY(12deg);
 }
 
 .book-spine {
     position: absolute;
     left: 0;
     top: 0;
-    width: 30px;
+    width: 28px;
     height: 100%;
-    background: linear-gradient(90deg, var(--dark-color), var(--primary-color));
-    transform: rotateY(0deg) translateZ(15px);
-    border-right: 1px solid rgba(0,0,0,0.2);
+    background: var(--black);
+    transform: rotateY(0deg) translateZ(14px);
+    border-right: 1px solid var(--gray-dark);
     display: flex;
     align-items: center;
     justify-content: center;
     writing-mode: vertical-rl;
     text-orientation: mixed;
-    color: var(--light-color);
-    padding: 1rem 0;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    color: var(--white);
+    padding: 0.8rem 0;
+    box-shadow: -2px 0 4px rgba(0,0,0,0.15);
 }
 
 .spine-content {
@@ -1049,77 +1364,75 @@ body {
 }
 
 .spine-content h4 {
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    color: var(--light-color);
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
 }
 
 .spine-content p {
     font-size: 0.7rem;
-    color: #BDC3C7;
+    color: var(--gray-light);
 }
 
 .spine-decoration {
     position: absolute;
-    bottom: 10px;
+    bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 20px;
-    height: 2px;
-    background: rgba(255,255,255,0.2);
+    width: 16px;
+    height: 1.5px;
+    background: var(--gray-light);
 }
 
 .book-cover {
     position: absolute;
-    left: 30px;
+    left: 28px;
     top: 0;
-    width: calc(100% - 30px);
+    width: calc(100% - 28px);
     height: 100%;
-    background: var(--light-color);
+    background: var(--white);
     transform: rotateY(0deg) translateZ(0);
     overflow: hidden;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
 }
 
 .book-cover img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: grayscale(100%);
     transition: var(--transition);
+}
+
+.book:hover img {
+    filter: grayscale(0%);
 }
 
 .book-pages {
     position: absolute;
     right: 0;
     top: 0;
-    width: 5px;
+    width: 4px;
     height: 100%;
-    background: repeating-linear-gradient(
-        to bottom,
-        #fff,
-        #fff 1px,
-        #f0f0f0 1px,
-        #f0f0f0 2px
-    );
+    background: repeating-linear-gradient(to bottom, #fff, #fff 1px, #f0f0f0 1px, #f0f0f0 2px);
 }
 
 .book-details {
     position: absolute;
     bottom: 0;
-    left: 30px;
-    width: calc(100% - 30px);
-    padding: 0.8rem;
-    background: rgba(0,0,0,0.7);
-    color: white;
+    left: 28px;
+    width: calc(100% - 28px);
+    padding: 0.7rem;
+    background: var(--black);
+    color: var(--white);
     text-align: center;
     transform: translateY(100%);
     transition: var(--transition);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     text-decoration: none;
+    font-size: 0.85rem;
 }
 
 .book:hover .book-details {
@@ -1128,16 +1441,16 @@ body {
 
 .bookshelf-actions {
     text-align: center;
-    margin-top: 2rem;
+    margin-top: 1.8rem;
 }
 
 /* Newsletter Section */
 .newsletter-section {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: var(--light-color);
+    background: var(--black);
+    color: var(--white);
     padding: 4rem 0;
     margin: 4rem 0;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     position: relative;
     overflow: hidden;
 }
@@ -1149,107 +1462,155 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('https://picsum.photos/800/600?random=2') center/cover;
-    opacity: 0.1;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+    opacity: 0.4;
 }
 
 .newsletter-content {
     position: relative;
     z-index: 1;
-    max-width: 800px;
+    max-width: 750px;
     margin: 0 auto;
     text-align: center;
 }
 
 .newsletter-icon {
-    font-size: 3rem;
-    color: var(--light-color);
+    font-size: 2.8rem;
+    color: var(--white);
+    margin-bottom: 1.2rem;
+}
+
+.newsletter-content h3 {
+    font-size: 2.3rem;
+    font-weight: 700;
     margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.newsletter-content p {
+    font-size: 1.1rem;
+    color: var(--gray-light);
+    margin-bottom: 1.8rem;
 }
 
 .newsletter-form {
     display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
+    gap: 0.8rem;
+    margin-top: 1.8rem;
+    position: relative;
 }
 
 .newsletter-form input {
     flex: 1;
-    padding: 0.8rem 1rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--gray-light);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    background: var(--white);
+    color: var(--black);
+}
+
+.newsletter-form button {
+    position: relative;
+}
+
+.form-loading {
+    margin-left: 0.4rem;
 }
 
 .newsletter-benefits {
     display: flex;
     justify-content: center;
-    gap: 2rem;
-    margin-top: 2rem;
+    gap: 1.8rem;
+    margin-top: 1.8rem;
 }
 
 .benefit-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
+    font-size: 0.9rem;
 }
 
 .benefit-item i {
-    color: var(--light-color);
+    color: var(--white);
 }
 
 /* Footer */
 .site-footer {
-    background: var(--dark-color);
-    color: var(--light-color);
-    padding: 4rem 0 2rem;
+    background: var(--black);
+    color: var(--white);
+    padding: 4.5rem 0 2.5rem;
+    position: relative;
+}
+
+.site-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+    opacity: 0.4;
 }
 
 .footer-content {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    gap: 4rem;
+    gap: 3.5rem;
 }
 
 .footer-logo h3 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    font-size: 2.1rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    letter-spacing: 1.1px;
+}
+
+.footer-logo p {
+    color: var(--gray-light);
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
 }
 
 .social-links {
     display: flex;
-    gap: 1.5rem;
-    margin-top: 1.5rem;
+    gap: 1.2rem;
+    margin-top: 1.8rem;
 }
 
 .social-links a {
-    width: 40px;
-    height: 40px;
-    background: rgba(255,255,255,0.1);
+    width: 44px;
+    height: 44px;
+    background: var(--gray-dark);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--transition);
-    color: var(--light-color);
+    color: var(--white);
     text-decoration: none;
+    transition: var(--transition);
 }
 
 .social-links a:hover {
-    background: rgba(255,255,255,0.2);
-    transform: translateY(-3px);
+    background: var(--white);
+    color: var(--black);
+    transform: scale(1.08);
 }
 
 .footer-links {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+    gap: 2.5rem;
 }
 
 .footer-column h4 {
-    color: var(--light-color);
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 1.8rem;
+    color: var(--white);
+    letter-spacing: 0.5px;
 }
 
 .footer-column ul {
@@ -1257,36 +1618,105 @@ body {
 }
 
 .footer-column li {
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.9rem;
 }
 
 .footer-column a {
-    color: #BDC3C7;
+    color: var(--gray-light);
     text-decoration: none;
+    font-size: 0.9rem;
     transition: var(--transition);
 }
 
 .footer-column a:hover {
-    color: var(--light-color);
+    color: var(--white);
 }
 
 .footer-bottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--gray-dark);
+    font-size: 0.9rem;
 }
 
 .payment-methods {
     display: flex;
-    gap: 1rem;
+    gap: 1.2rem;
 }
 
 .payment-methods i {
-    font-size: 1.5rem;
-    color: #BDC3C7;
+    font-size: 1.8rem;
+    color: var(--gray-light);
+    transition: var(--transition);
+}
+
+.payment-methods i:hover {
+    color: var(--white);
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 48px;
+    height: 48px;
+    background: var(--black);
+    color: var(--white);
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background: var(--gray-dark);
+    transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+    100% { transform: scale(1); }
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::after {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
 }
 
 /* Responsive Design */
@@ -1303,20 +1733,53 @@ body {
     .hero-cta {
         justify-content: center;
     }
+
+    .hero-stats {
+        justify-content: center;
+    }
+
+    .featured-book {
+        flex: 0 0 280px;
+    }
+
+    .book-cover {
+        height: 320px;
+    }
 }
 
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;
+        gap: 1.8rem;
     }
 
     .main-nav ul {
         flex-wrap: wrap;
         justify-content: center;
+        gap: 1.2rem;
     }
 
     .categories-grid {
         grid-template-columns: 1fr;
+    }
+
+    .book {
+        width: 140px;
+        height: 210px;
+    }
+
+    .book-spine {
+        width: 24px;
+    }
+
+    .book-cover {
+        left: 24px;
+        width: calc(100% - 24px);
+    }
+
+    .book-details {
+        left: 24px;
+        width: calc(100% - 24px);
     }
 
     .footer-content {
@@ -1324,12 +1787,12 @@ body {
     }
 
     .footer-links {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
     }
 
     .footer-bottom {
         flex-direction: column;
-        gap: 1rem;
+        gap: 1.2rem;
         text-align: center;
     }
 
@@ -1337,9 +1800,40 @@ body {
         flex-direction: column;
     }
 
+    .carousel-nav {
+        width: 38px;
+        height: 38px;
+    }
+
+    .featured-carousel {
+        padding: 0 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .section-header h3 {
+        font-size: 2rem;
+    }
+
+    .hero-section h2 {
+        font-size: 2.4rem;
+    }
+
     .book {
-        width: 150px;
-        height: 225px;
+        width: 120px;
+        height: 180px;
+    }
+
+    .book-spine h4 {
+        font-size: 0.75rem;
+    }
+
+    .book-spine p {
+        font-size: 0.65rem;
+    }
+
+    .footer-links {
+        grid-template-columns: 1fr;
     }
 }
 </style>
@@ -1348,17 +1842,66 @@ body {
 {% block javascripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Book hover effects
-    const books = document.querySelectorAll('.book');
-    books.forEach(book => {
-        book.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-10px) rotateY(10deg)';
+    // Search functionality
+    const searchInput = document.querySelector('.search-input');
+    if (searchInput) {
+        searchInput.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+            this.parentElement.style.transform = 'scale(1.02)';
+            this.parentElement.style.boxShadow = '0 4px 12px rgba(0,0,0,0.18)';
         });
-        
-        book.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) rotateY(0deg)';
+
+        searchInput.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+            this.parentElement.style.transform = 'scale(1)';
+            this.parentElement.style.boxShadow = 'none';
+        });
+    }
+
+    // Smooth scrolling for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
         });
     });
+
+    // Lazy load images
+    const images = document.querySelectorAll('.book-image');
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.add('loaded');
+                    img.onerror = () => {
+                        img.src = 'https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=Image+Indisponible';
+                    };
+                    observer.unobserve(img);
+                }
+            });
+        }, { rootMargin: '200px' });
+
+        images.forEach(img => {
+            if (img.src === img.dataset.src && img.complete) {
+                img.classList.add('loaded');
+            } else {
+                observer.observe(img);
+            }
+        });
+    } else {
+        // Fallback for older browsers
+        images.forEach(img => {
+            img.src = img.dataset.src;
+            img.classList.add('loaded');
+            img.onerror = () => {
+                img.src = 'https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=Image+Indisponible';
+            };
+        });
+    }
 
     // Carousel functionality
     const carousel = document.querySelector('.carousel-container');
@@ -1366,81 +1909,158 @@ document.addEventListener('DOMContentLoaded', function() {
     const nextBtn = document.querySelector('.carousel-nav.next');
     const dotsContainer = document.querySelector('.carousel-dots');
     const books = document.querySelectorAll('.featured-book');
-    let currentIndex = 0;
+    
+    // Ensure carousel functionality even with no books
+    if (books.length > 0) {
+        let currentIndex = 0;
 
-    // Create dots
-    books.forEach((_, index) => {
-        const dot = document.createElement('div');
-        dot.classList.add('carousel-dot');
-        if (index === 0) dot.classList.add('active');
-        dot.addEventListener('click', () => goToSlide(index));
-        dotsContainer.appendChild(dot);
-    });
-
-    const dots = document.querySelectorAll('.carousel-dot');
-
-    function updateCarousel() {
-        const offset = -currentIndex * (350 + 32); // 350px book width + 32px gap
-        carousel.style.transform = `translateX(${offset}px)`;
-        
-        books.forEach((book, index) => {
-            book.classList.toggle('active', index === currentIndex);
-        });
-        
-        dots.forEach((dot, index) => {
-            dot.classList.toggle('active', index === currentIndex);
-        });
-    }
-
-    function goToSlide(index) {
-        currentIndex = index;
-        updateCarousel();
-    }
-
-    function nextSlide() {
-        currentIndex = (currentIndex + 1) % books.length;
-        updateCarousel();
-    }
-
-    function prevSlide() {
-        currentIndex = (currentIndex - 1 + books.length) % books.length;
-        updateCarousel();
-    }
-
-    if (prevBtn && nextBtn) {
-        prevBtn.addEventListener('click', prevSlide);
-        nextBtn.addEventListener('click', nextSlide);
-    }
-
-    // Auto-advance carousel
-    let autoAdvance = setInterval(nextSlide, 5000);
-
-    // Pause auto-advance on hover
-    carousel.addEventListener('mouseenter', () => clearInterval(autoAdvance));
-    carousel.addEventListener('mouseleave', () => {
-        autoAdvance = setInterval(nextSlide, 5000);
-    });
-
-    // Search functionality
-    const searchInput = document.querySelector('.search-input');
-    if (searchInput) {
-        searchInput.addEventListener('focus', function() {
-            this.parentElement.classList.add('focused');
+        // Create dots
+        books.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('carousel-dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(index));
+            dotsContainer.appendChild(dot);
         });
 
-        searchInput.addEventListener('blur', function() {
-            this.parentElement.classList.remove('focused');
-        });
-    }
+        const dots = document.querySelectorAll('.carousel-dot');
 
-    // Add smooth scroll to navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
+        function updateCarousel() {
+            const bookWidth = books[0].offsetWidth;
+            const gap = 32;
+            const offset = currentIndex * (bookWidth + gap);
+            carousel.scrollTo({
+                left: offset,
                 behavior: 'smooth'
             });
+
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        function goToSlide(index) {
+            currentIndex = Math.max(0, Math.min(index, books.length - 1));
+            updateCarousel();
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % books.length;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + books.length) % books.length;
+            updateCarousel();
+        }
+
+        if (prevBtn && nextBtn) {
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+        }
+
+        // Auto-advance carousel
+        let autoAdvance = setInterval(nextSlide, 5000);
+        carousel.addEventListener('mouseenter', () => clearInterval(autoAdvance));
+        carousel.addEventListener('mouseleave', () => {
+            autoAdvance = setInterval(nextSlide, 5000);
         });
+    } else {
+        // Hide carousel controls if no books
+        if (prevBtn && nextBtn && dotsContainer) {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+            dotsContainer.style.display = 'none';
+        }
+    }
+
+    // Book hover effects
+    const booksShelf = document.querySelectorAll('.book');
+    booksShelf.forEach(book => {
+        book.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) rotateY(12deg)';
+        });
+        book.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) rotateY(0deg)';
+        });
+    });
+
+    // Favorite button toggle
+    const favoriteButtons = document.querySelectorAll('.action-btn.favorite');
+    favoriteButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fas');
+            icon.classList.toggle('far');
+            this.classList.toggle('active');
+        });
+    });
+
+    // Share button click (placeholder for share functionality)
+    const shareButtons = document.querySelectorAll('.action-btn.share');
+    shareButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Placeholder for share functionality
+            alert('Share functionality to be implemented');
+        });
+    });
+
+    // Cart button form submission
+    
+
+    // Ripple effect on buttons
+    document.querySelectorAll('.btn, .action-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = `${size}px`;
+            ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+            ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+
+    // Newsletter form submission
+    const newsletterForm = document.querySelector('.newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const loading = this.querySelector('.form-loading');
+            if (loading) {
+                loading.style.display = 'inline-block';
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                    alert('Inscription réussie !');
+                    this.reset();
+                }, 1000);
+            }
+        });
+    }
+
+    // Parallax effect for hero image
+    const heroImage = document.querySelector('.hero-image');
+    if (heroImage) {
+        window.addEventListener('scroll', function() {
+            const scrollPosition = window.scrollY;
+            heroImage.style.transform = `translateY(${scrollPosition * 0.3}px)`;
+        });
+    }
+
+    // Back to top button
+    const backToTop = document.querySelector('.back-to-top');
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    backToTop.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 });
 </script>

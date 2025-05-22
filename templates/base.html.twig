@@ -489,6 +489,11 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <header>
+
+        </header>
+        {% block body %}
+            {% block content %}{% endblock %}
+        {% endblock %}
     </body>
 </html>

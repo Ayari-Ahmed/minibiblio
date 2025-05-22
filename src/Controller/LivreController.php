@@ -7,11 +7,16 @@ use App\Form\LivreForm;
 use App\Repository\LivreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\OrderRepository;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Order;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/livre')]
+#[Route('/admin/livre')]
 final class LivreController extends AbstractController
 {
     public function __construct(
@@ -20,7 +25,7 @@ final class LivreController extends AbstractController
     }
 
     #[Route('/', name: 'app_livre_index', methods: ['GET'])]
-    public function index(Request $request): Response
+    public function index(Request $request, OrderRepository $orderRepository): Response
     {
         $search = $request->query->get('search', '');
         $queryBuilder = $this->livreRepository->createQueryBuilder('l');
@@ -34,6 +39,7 @@ final class LivreController extends AbstractController
         }
 
         $livres = $queryBuilder->getQuery()->getResult();
+        $orders = $orderRepository->findAll();
 
         if ($request->isXmlHttpRequest()) {
             return $this->render('livre/_book_list.html.twig', [
@@ -43,18 +49,46 @@ final class LivreController extends AbstractController
 
         return $this->render('livre/index.html.twig', [
             'livres' => $livres,
+            'orders' => $orders,
             'search' => $search,
         ]);
     }
 
     #[Route('/new', name: 'app_livre_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $livre = new Livre();
         $form = $this->createForm(LivreForm::class, $livre);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $imageFile */
+            $imageFile = $form->get('image')->getData();
+
+            // this condition is needed because the 'image' field is not required
+            // so the image file must be processed only when a file is uploaded
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                // Move the file to the directory where images are stored
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                    $this->addFlash('error', 'Failed to upload the image.');
+                    return $this->redirectToRoute('app_livre_new');
+                }
+
+                // updates the 'imageFilename' property to store the PDF file name
+                // instead of its contents
+                $livre->setImage($newFilename);
+            }
+
             $entityManager->persist($livre);
             $entityManager->flush();
 
@@ -76,7 +110,7 @@ final class LivreController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_livre_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Livre $livre, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Livre $livre, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(LivreForm::class, $livre);
         $form->handleRequest($request);
@@ -109,5 +143,24 @@ final class LivreController extends AbstractController
         return $this->redirectToRoute('app_livre_index');
     }
 
-   
+    #[Route('/{id}/edit_status', name: 'app_livre_edit_status', methods: ['GET', 'POST'])]
+    public function editStatus(Request $request, Order $order, EntityManagerInterface $entityManager): Response
+    {
+        $statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+
+        if ($request->isMethod('POST')) {
+            $newStatus = $request->request->get('status');
+            if (in_array($newStatus, $statuses)) {
+                $order->setStatus($newStatus);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_livre_index', [], Response::HTTP_SEE_OTHER);
+            }
+        }
+
+        return $this->render('livre/edit_status.html.twig', [
+            'order' => $order,
+            'statuses' => $statuses,
+        ]);
+    }
 }
