@@ -16,7 +16,8 @@
                     <li><a href="/">Accueil</a></li>
                     <li><a href="#">Livres</a></li>
                     <li><a href="#">Catégories</a></li>
-                    <li><a href="#">Nouveautés</a></li>
+                    {% if app.user %}<li><a href="{{ path('app_user_orders') }}">Mes Ordres</a></li>
+{% endif %}
                     <li><a href="/cart" class="active">Panier <span class="cart-badge">{{ totalQuantity }}</span></a></li>
                 </ul>
             </nav>
@@ -194,7 +195,8 @@
                         <li><a href="#">Accueil</a></li>
                         <li><a href="#">Livres</a></li>
                         <li><a href="#">Catégories</a></li>
-                        <li><a href="#">Nouveautés</a></li>
+                        {% if app.user %}<li><a href="{{ path('app_user_orders') }}">Mes Ordres</a></li>
+{% endif %}
                         <li><a href="#">À propos</a></li>
                     </ul>
                 </div>

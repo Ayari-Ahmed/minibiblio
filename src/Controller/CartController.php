@@ -64,7 +64,17 @@ class CartController extends AbstractController
             $totalQuantity += $qty;
         }
 
-        return $this->redirectToRoute('app_cart');
+        // Calculate total quantity
+        $totalQuantity = 0;
+        foreach ($cart as $qty) {
+            $totalQuantity += $qty;
+        }
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Book added to cart successfully!',
+            'totalQuantity' => $totalQuantity,
+        ]);
     }
 
     #[Route('/cart/remove/{id}', name: 'cart_remove')]
