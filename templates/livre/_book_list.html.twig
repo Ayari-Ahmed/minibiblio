@@ -11,7 +11,7 @@
                         <a href="{{ path('app_livre_edit', {'id': livre.id}) }}" class="btn btn-outline-primary" title="Edit">
                             <i class="fas fa-edit"></i>
                         </a>
-<form method="post" action="{{ path('app_livre_delete', {'id': livre.id}) }}" class="d-inline">
+<form method="post" action="{{ path('app_livre_delete', {'id': livre.id}) }}" class="d-inline" onsubmit="return confirmDelete(this, event, 'delete-form-{{ livre.id }}');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ livre.id) }}">
                             <button class="btn btn-outline-danger" title="Delete">
                                 <i class="fas fa-trash"></i>

@@ -54,7 +54,96 @@
                 {{ form_label(form.publishedAt, 'Publication Date', {'label_attr': {'class': 'form-label'}}) }}
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                {{ form_widget(form.price, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.price, 'Price', {'label_attr': {'class': 'form-label'}}) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                {{ form_widget(form.publicationYear, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.publicationYear, 'Publication Year', {'label_attr': {'class': 'form-label'}}) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                {{ form_widget(form.genre, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.genre, 'Genre', {'label_attr': {'class': 'form-label'}}) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                {{ form_widget(form.language, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.language, 'Language', {'label_attr': {'class': 'form-label'}}) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                {{ form_widget(form.publisher, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.publisher, 'Publisher', {'label_attr': {'class': 'form-label'}}) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                {{ form_widget(form.numberOfPages, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.numberOfPages, 'Number Of Pages', {'label_attr': {'class': 'form-label'}}) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                {{ form_widget(form.discount, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.discount, 'Discount', {'label_attr': {'class': 'form-label'}}) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                {{ form_widget(form.availability, {
+                    'attr': {
+                        'class': 'form-check-input',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.availability, 'Availability', {'label_attr': {'class': 'form-label'}}) }}
+            </div>
+        </div>
     </div>
+    
     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
         <a href="{{ path('app_livre_index') }}" class="btn btn-outline-secondary me-md-2">
             <i class="fas fa-arrow-left me-2"></i>Back to list

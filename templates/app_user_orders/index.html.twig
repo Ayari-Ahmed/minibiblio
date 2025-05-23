@@ -78,10 +78,15 @@
                                             {% if loop.first %}
                                                 <td rowspan="{{ order.items|length }}" class="order-id">{{ order.id }}</td>
                                                 <td rowspan="{{ order.items|length }}">{{ order.createdAt ? order.createdAt|date('d/m/Y H:i') : '-' }}</td>
-                                                <td rowspan="{{ order.items|length }}" class="status-cell">{{ order.status|capitalize }}</td>
-                                                <td rowspan="{{ order.items|length }}" class="total-cell">€{{ order.totalPrice|number_format(2) }}</td>
-                                            {% endif %}
-                                            <td class="product-info">
+                                 <td rowspan="{{ order.items|length }}" class="status-cell">
+                                    {{ order.status|capitalize }}
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <a href="{{ path('app_livre_edit_status', {'id': order.id}) }}">Edit Status</a>
+                                    {% endif %}
+                                 </td>
+                                 <td rowspan="{{ order.items|length }}" class="total-cell">€{{ order.totalPrice|number_format(2) }}</td>
+                             {% endif %}
+                             <td class="product-info">
                                                 <div class="product-details" data-tooltip="{{ item.title|default('Produit') }}">
                                                     {# {% if item.image %}
                                                         <img src="{{ item.image }}" alt="{{ item.title|default('Produit') }}" class="book-image" data-src="{{ item.image }}">
