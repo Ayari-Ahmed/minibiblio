@@ -383,12 +383,7 @@
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.text();
-                    })
+                    .then(response => response.text())
                     .then(html => {
                         bookList.innerHTML = html;
                         searchLoading.style.display = 'none';

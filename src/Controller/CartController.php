@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request; // Added for POST data
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\LivreRepository;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class CartController extends AbstractController
 {

@@ -421,6 +421,201 @@ body {
     transform: scale(1.1);
 }
 
+
+/* Navigation */
+.main-nav ul {
+    display: flex;
+    gap: 1.8rem;
+    list-style: none;
+}
+
+.main-nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    position: relative;
+    transition: var(--transition);
+}
+
+.main-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: var(--white);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease;
+}
+
+.main-nav a:hover::after,
+.main-nav a.active::after {
+    transform: scaleX(1);
+}
+
+.cart-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: var(--gray-dark);
+    color: var(--white);
+    border-radius: 50%;
+    font-size: 0.75rem;
+    margin-left: 0.4rem;
+    transition: var(--transition);
+}
+
+.main-nav a:hover .cart-badge {
+    background: var(--white);
+    color: var(--black);
+}
+
+
+/* Header Styles */
+.site-header {
+    background: var(--black);
+    padding: 1.8rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(12px);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2.2rem;
+}
+
+.logo h1 {
+    color: var(--white);
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.tagline {
+    color: var(--gray-light);
+    font-size: 0.85rem;
+    font-style: italic;
+    letter-spacing: 0.6px;
+    margin-top: 0.2rem;
+}
+/* User Info Styles */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--black);
+    padding: 0.7rem 1.3rem;
+    border-radius: 24px;
+    box-shadow: var(--shadow-sm);
+    color: var(--white);
+    font-size: 0.97rem;
+    font-weight: 500;
+    transition: var(--transition);
+    border: 1.5px solid var(--gray-dark);
+    position: relative;
+}
+
+.user-info i {
+    font-size: 1.15rem;
+    color: var(--white);
+    background: var(--gray-dark);
+    border-radius: 50%;
+    padding: 0.35rem;
+    margin-right: 0.2rem;
+    transition: var(--transition);
+}
+
+.user-info .user-name {
+    color: var(--white);
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    margin-right: 0.7rem;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-info .btn-outline {
+    border-color: var(--white);
+    color: var(--white);
+    background: transparent;
+    padding: 0.4rem 1.1rem;
+    font-size: 0.92rem;
+    margin-left: 0.3rem;
+}
+
+.user-info .btn-outline:hover {
+    background: var(--white);
+    color: var(--black);
+}
+
+/* Search Bar */
+.header-search {
+    flex: 1;
+    max-width: 380px;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1.1rem;
+    padding-right: 2.8rem;
+    border: 1.5px solid var(--gray-light);
+    border-radius: var(--border-radius);
+    background: var(--white);
+    color: var(--black);
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.search-input::placeholder {
+    color: var(--gray);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--black);
+    box-shadow: var(--shadow-sm);
+    transform: scale(1.01);
+}
+
+.search-button {
+    position: absolute;
+    right: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.search-button:hover {
+    color: var(--black);
+    transform: translateY(-50%) scale(1.15);
+}
+
+ 
+
 /* Animations */
 @keyframes ripple {
     to {
@@ -516,9 +711,21 @@ body {
                 <h1>MiniBiblio</h1>
                 <p class="tagline">Œuvres d'élite, sélection d'élite</p>
             </div>
+      
             <div class="header-actions">
-                <a href="/login" class="btn btn-outline" data-tooltip="Se connecter">Connexion</a>
-                <a href="/register" class="btn btn-primary" data-tooltip="S'inscrire">Inscription</a>
+                {% if app.user %}
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="user-name" title="{{ app.user.email }}">{{ app.user.email|split('@')[0]|capitalize }}</span>
+                    
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline" data-tooltip="Déconnexion">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-outline">Connexion</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-primary">Inscription</a>
+                {% endif %}
             </div>
         </div>
     </div>

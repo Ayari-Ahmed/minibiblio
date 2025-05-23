@@ -7,10 +7,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class LivreForm extends AbstractType
 {
@@ -47,23 +46,13 @@ class LivreForm extends AbstractType
                 ],
                 'label' => 'Description'
             ])
-            ->add('price', IntegerType::class, [
+            ->add('price', NumberType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Entrez le prix du livre'
                 ],
-                'label' => 'Prix',
-                'required' => true,
-            ])
-            ->add('imageFile', VichImageType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Téléchargez l\'image du livre'
-                ],
-                'label' => 'Image du livre',
-                'required' => false,
-            ])
-        ;
+                'label' => 'Prix'
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

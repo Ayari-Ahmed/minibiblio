@@ -10,14 +10,17 @@ use App\Service\CartService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Order;
 use App\Entity\OrderItem;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class CheckoutController extends AbstractController
 {
     private $cartService;
+    private $authorizationChecker;
 
-    public function __construct(CartService $cartService)
+    public function __construct(CartService $cartService, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->cartService = $cartService;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     #[Route('/checkout', name: 'app_checkout')]
@@ -28,6 +31,7 @@ final class CheckoutController extends AbstractController
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
+
 
         $cart = $this->cartService->getCart();
 
