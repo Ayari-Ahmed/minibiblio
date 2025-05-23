@@ -781,6 +781,34 @@ body {
                             <p>{{ livre.description|default('Un roman captivant qui vous emmènera dans un voyage extraordinaire.') }}</p>
                         </div>
 
+                        {% if livre.publicationYear %}
+                            <p><strong>Année de publication:</strong> {{ livre.publicationYear }}</p>
+                        {% endif %}
+
+                        {% if livre.genre %}
+                            <p><strong>Genre:</strong> {{ livre.genre }}</p>
+                        {% endif %}
+
+                        {% if livre.language %}
+                            <p><strong>Langue:</strong> {{ livre.language }}</p>
+                        {% endif %}
+
+                        {% if livre.publisher %}
+                            <p><strong>Éditeur:</strong> {{ livre.publisher }}</p>
+                        {% endif %}
+
+                        {% if livre.numberOfPages %}
+                            <p><strong>Nombre de pages:</strong> {{ livre.numberOfPages }}</p>
+                        {% endif %}
+
+                        {% if livre.discount %}
+                            <p><strong>Discount:</strong> {{ livre.discount }}</p>
+                        {% endif %}
+
+                        {% if livre.availability %}
+                            <p><strong>Availability:</strong> {{ livre.availability ? 'In Stock' : 'Out of Stock' }}</p>
+                        {% endif %}
+
                         <div class="book-actions">
                             <button class="btn btn-primary" data-tooltip="Ajouter à ma liste">
                                 <i class="fas fa-bookmark"></i> Ajouter à ma liste

@@ -162,50 +162,85 @@
                 <div class="carousel-container">
                     {% for livre in livres|slice(0, 5) %}
                         <div class="featured-book">
-                            <div class="">
-                                {# <img src="{{ livre.imageUrl|default('https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=' ~ livre.title|url_encode) }}"
-                                     alt="{{ livre.title }}"
-                                     class="book-image"
-                                     data-src="{{ livre.imageUrl|default('https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=' ~ livre.title|url_encode) }}"
-                                     onerror="this.src='https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=Image+Indisponible';"> #}
-                                {# <div class="book-overlay"></div> #}
-                                <div class="book-badge">Nouveau</div>
-                                <div class="book-actions">
-                                    <button class="action-btn favorite" data-tooltip="Ajouter aux favoris" >
-                                        <i class="far fa-heart"></i>
-                                    </button>
-                                    <button class="action-btn share" data-tooltip="Partager">
-                                        <i class="fas fa-share-alt"></i>
-                                    </button>
-                                    <form action="{{ path('cart_add', {'id': livre.id}) }}" method="post">
-                                        <button type="submit" class="action-btn cart" data-tooltip="Ajouter au panier">
-                                            <i class="fas fa-shopping-cart"></i>
+                            <div class="book-container">
+                                <!-- Image Section -->
+                                <div class="book-image-wrapper">
+                                    <img src="{{ livre.imageUrl|default('https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=' ~ livre.title|url_encode) }}"
+                                        alt="{{ livre.title }}"
+                                        class="book-image"
+                                        data-src="{{ livre.imageUrl|default('https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=' ~ livre.title|url_encode) }}"
+                                        onerror="this.src='https://placehold.co/300x450/0D0D0D/FFFFFF/png?text=Image+Indisponible';">
+                                    <div class="book-badge">Nouveau</div>
+                                    {% if livre.discount %}
+                                        <div class="book-discount-badge"><i class="fas fa-tag"></i> {{ livre.discount }}% Off</div>
+                                    {% endif %}
+                                    {# <div class="book-overlay"></div> #}
+                                    <div class="book-actions">
+                                        <button class="action-btn favorite" data-tooltip="Ajouter aux favoris">
+                                            <i class="far fa-heart"></i>
                                         </button>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="book-info mt-4" >
-                            
-                                <h4 class="book-title" data-tooltip="{{ livre.title }}">{{ livre.title }}</h4>
-                                <p class="book-author">{{ livre.author }}</p>
-                                <div class="book-rating">
-                                    <div class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
+                                        <button class="action-btn share" data-tooltip="Partager">
+                                            <i class="fas fa-share-alt"></i>
+                                        </button>
+                                        <form action="{{ path('cart_add', {'id': livre.id}) }}" method="post">
+                                            <button type="submit" class="action-btn cart" data-tooltip="Ajouter au panier">
+                                                <i class="fas fa-shopping-cart"></i>
+                                            </button>
+                                        </form>
                                     </div>
-                                    <span class="rating-count">(128)</span>
                                 </div>
-                                <div class="book-meta">
-                                    <span class="meta-item"><i class="fas fa-book-open"></i> 320 pages</span>
-                                    <span class="meta-item"><i class="fas fa-calendar"></i> 2023</span>
+
+                                <!-- Info Section -->
+                                <div class="book-info">
+                                    <h4 class="book-title" data-tooltip="{{ livre.title }}">
+                                        <i class="fas fa-book"></i> {{ livre.title }}
+                                    </h4>
+                                    <p class="book-author">
+                                        <i class="fas fa-user-edit"></i> {{ livre.author }}
+                                    </p>
+                                    <div class="book-details">
+                                        {% if livre.publicationYear %}
+                                            <p><i class="fas fa-calendar-alt"></i> <strong>Année:</strong> {{ livre.publicationYear }}</p>
+                                        {% endif %}
+                                        {% if livre.genre %}
+                                            <p><i class="fas fa-bookmark"></i> <strong>Genre:</strong> {{ livre.genre }}</p>
+                                        {% endif %}
+                                        {% if livre.language %}
+                                            <p><i class="fas fa-language"></i> <strong>Langue:</strong> {{ livre.language }}</p>
+                                        {% endif %}
+                                        {% if livre.publisher %}
+                                            <p><i class="fas fa-building"></i> <strong>Éditeur:</strong> {{ livre.publisher }}</p>
+                                        {% endif %}
+                                        {% if livre.numberOfPages %}
+                                            <p><i class="fas fa-book-open"></i> <strong>Pages:</strong> {{ livre.numberOfPages }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="book-rating">
+                                        <div class="stars">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <span class="rating-count"><i class="fas fa-users"></i> (128)</span>
+                                    </div>
+                                    <div class="book-meta">
+                                        {% if livre.numberOfPages %}
+                                            <span class="meta-item"><i class="fas fa-book-open"></i> {{ livre.numberOfPages }} pages</span>
+                                        {% endif %}
+                                        <span class="meta-item"><i class="fas fa-calendar-check"></i> {{ livre.publicationYear|default('2023') }}</span>
+                                        {% if livre.availability %}
+                                            <span class="meta-item"><i class="fas fa-check-circle"></i> En stock</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="book-description">
+                                        <p><i class="fas fa-quote-left"></i> {{ livre.description|default('Un roman captivant qui vous emmènera dans un voyage extraordinaire.') }}</p>
+                                    </div>
+                                    <a href="{{ path('book_details', {'id': livre.id}) }}" class="btn btn-primary">
+                                        <i class="fas fa-eye"></i> Voir les détails
+                                    </a>
                                 </div>
-                                <div class="book-description">
-                                    <p>{{ livre.description|default('Un roman captivant qui vous emmènera dans un voyage extraordinaire.') }}</p>
-                                </div>
-                                <a href="{{ path('book_details', {'id': livre.id}) }}" class="btn btn-primary">Voir les détails</a>
                             </div>
                         </div>
                     {% else %}
@@ -1077,7 +1112,7 @@ body {
 
 .book-image {
     width: 100%;
-    height: 100%;
+    height: 300px;
     object-fit: cover;
     object-position: center;
     border-radius: 6px 6px 0 0;
@@ -1115,6 +1150,33 @@ body {
     top: 12px;
     right: 12px;
     background: var(--black);
+    color: var(--white);
+    padding: 0.3rem 0.7rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    z-index: 3;
+}
+
+.book-discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ff4444;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    
+}
+
+.book-discount-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 100px;
+    background: #ff4444;
     color: var(--white);
     padding: 0.3rem 0.7rem;
     border-radius: 12px;

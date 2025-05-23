@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Checkout - MiniBiblio{% endblock %}
+{% block title %}Mes Commandes - MiniBiblio{% endblock %}
 
 {% block body %}
-<!-- Header -->
+<!-- Header (unchanged) -->
 <header class="site-header">
     <div class="container">
         <div class="header-content">
@@ -17,7 +17,7 @@
                     <li><a href="#">Livres</a></li>
                     <li><a href="#">Catégories</a></li>
                     <li><a href="#">Nouveautés</a></li>
-                    <li><a href="{{ path('app_cart') }}" class="active">Panier <span class="cart-badge">{{ totalQuantity|default(0) }}</span></a></li>
+                    <li><a href="{{ path('app_cart') }}">Panier <span class="cart-badge">{{ totalQuantity|default(0) }}</span></a></li>
                 </ul>
             </nav>
             <div class="header-search">
@@ -49,81 +49,69 @@
 <!-- Main Content -->
 <main class="main-content">
     <div class="container">
-        <!-- Checkout Section -->
-        <section class="checkout-section">
+        <!-- Orders Section -->
+        <section class="orders-section">
             <div class="section-header">
-                <h3><i class="fas fa-shopping-cart"></i> Votre Panier</h3>
-                <p>Finalisez votre sélection d'œuvres d'élite</p>
+                <h3><i class="fas fa-list-alt"></i> Mes Commandes</h3>
+                <p>Consultez l'historique de vos commandes</p>
                 <div class="shelf-decoration"></div>
             </div>
-            {% if items|length > 0 %}
-                <div class="cart-grid">
-                    <!-- Cart Items Section -->
-                    <div class="cart-items">
-                        {% for item in items %}
-                            <div class="cart-item" data-tooltip="{{ item.product.title }}">
-                                <div class="cart-item-image-wrapper">
-                                    <img src="{{ item.product.imageUrl|default('https://placehold.co/180x270/0D0D0D/FFFFFF/png?text=' ~ item.product.title|url_encode) }}"
-                                         alt="{{ item.product.title }}"
-                                         class="book-image"
-                                         data-src="{{ item.product.imageUrl|default('https://placehold.co/180x270/0D0D0D/FFFFFF/png?text=' ~ item.product.title|url_encode) }}"
-                                         onerror="this.src='https://placehold.co/180x270/0D0D0D/FFFFFF/png?text=Image+Indisponible';">
-                                    {% if item.product.discount %}
-                                        <div class="book-discount-badge"><i class="fas fa-tag"></i> {{ item.product.discount }}% Off</div>
-                                    {% endif %}
-                                    <div class="book-overlay"></div>
-                                </div>
-                                <div class="cart-item-info">
-                                    <h4 class="book-title"><i class="fas fa-book"></i> {{ item.product.title }}</h4>
-                                    <p class="book-author"><i class="fas fa-user-edit"></i> par {{ item.product.author }}</p>
-                                    <div class="cart-item-details">
-                                        <p><i class="fas fa-sort-numeric-up"></i> Quantité: {{ item.quantity }}</p>
-                                        <p><i class="fas fa-euro-sign"></i> Prix unitaire: €{{ item.product.price|number_format(2) }}</p>
-                                        <p><i class="fas fa-money-bill-wave"></i> Total: €{{ (item.product.price * item.quantity)|number_format(2) }}</p>
-                                    </div>
-                                    <div class="cart-item-actions">
-                                        <form action="{{ path('cart_remove', {'id': item.product.id}) }}" method="post">
-                                            <button type="submit" class="action-btn remove" data-tooltip="Supprimer du panier">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <!-- Cart Summary Section -->
-                    <div class="cart-sidebar">
-                        <div class="cart-summary">
-                            <h4><i class="fas fa-list-alt"></i> Résumé de la Commande</h4>
-                            <div class="summary-content">
-                                <div class="summary-item">
-                                    <span><i class="fas fa-book-open"></i> Articles:</span>
-                                    <span>{{ totalQuantity }}</span>
-                                </div>
-                                <div class="summary-item">
-                                    <span><i class="fas fa-tags"></i> Réduction:</span>
-                                    <span>- €{{ discount|number_format(2) }}</span>
-                                </div>
-                                <div class="summary-item total">
-                                    <span><i class="fas fa-wallet"></i> Total:</span>
-                                    <span>€{{ total|number_format(2) }}</span>
-                                </div>
-                            </div>
-                            <div class="summary-actions">
-                                <form action="{{ path('app_checkout_finalize') }}" method="post">
-                                    <button type="submit" class="btn btn-primary btn-large">
-                                        <i class="fas fa-check-circle"></i> Finaliser l'achat
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+            {% if orders|length > 0 %}
+                <div class="orders-list">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-receipt"></i> Commande</th>
+                                <th><i class="fas fa-calendar-alt"></i> Date</th>
+                                <th><i class="fas fa-info-circle"></i> Statut</th>
+                                <th><i class="fas fa-euro-sign"></i> Total</th>
+                                <th><i class="fas fa-book"></i> Produit</th>
+                                <th><i class="fas fa-sort-numeric-up"></i> Quantité</th>
+                                <th><i class="fas fa-money-bill-wave"></i> Prix</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                                {% if order.items|length > 0 %}
+                                    {% for item in order.items %}
+                                        <tr class="order-row" data-tooltip="Commande #{{ order.id }}">
+                                            {% if loop.first %}
+                                                <td rowspan="{{ order.items|length }}" class="order-id">{{ order.id }}</td>
+                                                <td rowspan="{{ order.items|length }}">{{ order.createdAt ? order.createdAt|date('d/m/Y H:i') : '-' }}</td>
+                                                <td rowspan="{{ order.items|length }}" class="status-cell">{{ order.status|capitalize }}</td>
+                                                <td rowspan="{{ order.items|length }}" class="total-cell">€{{ order.totalPrice|number_format(2) }}</td>
+                                            {% endif %}
+                                            <td class="product-info">
+                                                <div class="product-details" data-tooltip="{{ item.title|default('Produit') }}">
+                                                    {# {% if item.image %}
+                                                        <img src="{{ item.image }}" alt="{{ item.title|default('Produit') }}" class="book-image" data-src="{{ item.image }}">
+                                                    {% else %} #}
+                                                        <img src="https://placehold.co/60x90/0D0D0D/FFFFFF/png?text=Image+Indisponible" alt="Produit indisponible" class="book-image">
+                                                    {# {% endif %} #}
+                                                    <span>{{ item.title|default('Produit indisponible') }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="quantity-cell">{{ item.quantity }}</td>
+                                            <td class="price-cell">€{{ item.price|number_format(2) }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr class="order-row" data-tooltip="Commande #{{ order.id }}">
+                                        <td class="order-id">{{ order.id }}</td>
+                                        <td>{{ order.createdAt ? order.createdAt|date('d/m/Y H:i') : '-' }}</td>
+                                        <td class="status-cell">{{ order.status|capitalize }}</td>
+                                        <td class="total-cell">€{{ order.totalPrice|number_format(2) }}</td>
+                                        <td colspan="3" class="no-items"><i class="fas fa-exclamation-circle"></i> Aucun article dans cette commande</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             {% else %}
-                <div class="empty-cart">
-                    <p><i class="fas fa-shopping-cart"></i> Votre panier est vide.</p>
-                    <a href="{{ path('app_home') }}" class="btn btn-primary">
+                <div class="empty-orders">
+                    <p><i class="fas fa-list-alt"></i> Vous n'avez aucune commande pour le moment.</p>
+                    <a href="{{ path('homepage') }}" class="btn btn-primary">
                         <i class="fas fa-book-open"></i> Explorer la collection
                     </a>
                 </div>
@@ -132,7 +120,7 @@
     </div>
 </main>
 
-<!-- Footer -->
+<!-- Footer (unchanged) -->
 <footer class="site-footer">
     <div class="container">
         <div class="footer-content">
@@ -140,9 +128,7 @@
                 <h3>MiniBiblio</h3>
                 <p>Œuvres d'élite, sélection d'élite</p>
                 <div class="social-links">
-                    <a href="#" data-tooltip="Facebookಸ">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
+                    <a href="#" data-tooltip="Facebook"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" data-tooltip="Twitter"><i class="fab fa-twitter"></i></a>
                     <a href="#" data-tooltip="Instagram"><i class="fab fa-instagram"></i></a>
                     <a href="#" data-tooltip="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
@@ -201,7 +187,7 @@
 {% block stylesheets %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
-/* Base Styles (Inherited from MiniBiblio Theme) */
+/* Base Styles (unchanged except for orders-table section) */
 :root {
     --black: #0D0D0D;
     --white: #FFFFFF;
@@ -213,6 +199,8 @@
     --shadow-lg: 0 12px 32px rgba(0,0,0,0.22);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --border-radius: 8px;
+    --primary-accent: #4A2C2A; /* Added for status colors */
+    --success-accent: #2A4A2C; /* Added for status colors */
 }
 
 * {
@@ -237,7 +225,7 @@ body {
     padding: 0 24px;
 }
 
-/* Button Styles */
+/* Button Styles (unchanged) */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -294,12 +282,7 @@ body {
     transform: translateY(-2px);
 }
 
-.btn-large {
-    padding: 1.1rem 2.4rem;
-    font-size: 1rem;
-}
-
-/* Tooltip Styles */
+/* Tooltip Styles (unchanged) */
 [data-tooltip] {
     position: relative;
 }
@@ -329,7 +312,7 @@ body {
     transform: translate(-50%, 4px);
 }
 
-/* Header Styles */
+/* Header Styles (unchanged) */
 .site-header {
     background: var(--black);
     padding: 1.8rem 0;
@@ -480,7 +463,6 @@ body {
     font-weight: 500;
     transition: var(--transition);
     border: 1.5px solid var(--gray-dark);
-    position: relative;
 }
 
 .user-info i {
@@ -510,7 +492,6 @@ body {
     background: transparent;
     padding: 0.4rem 1.1rem;
     font-size: 0.92rem;
-    margin-left: 0.3rem;
 }
 
 .user-info .btn-outline:hover {
@@ -518,10 +499,9 @@ body {
     color: var(--black);
 }
 
-/* Checkout Section */
-.checkout-section {
+/* Orders Section */
+.orders-section {
     margin: 4rem 0;
-    text-align: center;
 }
 
 .section-header {
@@ -570,226 +550,163 @@ body {
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
 
-.cart-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2rem;
-    margin-top: 2.5rem;
+.orders-list {
+    margin-top: 2rem;
+    overflow-x: auto; /* Ensure table is scrollable on small screens */
 }
 
-.cart-items {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.cart-item {
-    display: flex;
-    gap: 1.5rem;
+/* Updated Orders Table Styles */
+.orders-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
     background: var(--white);
-    padding: 1.5rem;
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-}
-
-.cart-item:hover {
-    transform: translateY(-4px);
     box-shadow: var(--shadow-md);
+    overflow: hidden;
+    font-size: 0.95rem;
+    
 }
 
-.cart-item-image-wrapper {
+.orders-table th,
+.orders-table td {
+    padding: 1.2rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--gray-light);
+    vertical-align: middle;
+    color: var(--black);
+}
+
+.orders-table th {
+    background: var(--black);
+    color: var(--white);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-size: 0.9rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.orders-table th i {
+    margin-right: 0.6rem;
+    font-size: 1rem;
+}
+
+.orders-table td {
+    background: var(--white);
+    transition: background 0.2s ease;
+}
+
+.orders-table tr:last-child td {
+    border-bottom: none;
+}
+
+.order-row {
+    transition: var(--transition);
     position: relative;
-    flex: 0 0 180px;
-    height: 270px;
+}
+
+.order-row:hover {
+    background: rgba(0, 0, 0, 0.03);
+    transform: translateY(-1px);
+}
+
+.order-id {
+    font-weight: 600;
+    color: var(--black);
+    font-size: 0.95rem;
+}
+
+.status-cell {
+    font-weight: 500;
+}
+
+.status-cell::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+.status-cell[data-status="delivered"]::before {
+    background: var(--success-accent);
+}
+
+.status-cell[data-status="pending"]::before {
+    background: var(--primary-accent);
+}
+
+.status-cell[data-status="cancelled"]::before {
+    background: var(--gray);
+}
+
+.total-cell {
+    font-weight: 600;
+    color: var(--black);
+}
+
+.product-info {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.product-details {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 300px;
 }
 
 .book-image {
-    width: 100%;
-    height: 100%;
+    width: 50px;
+    height: 75px;
     object-fit: cover;
-    border-radius: 6px;
-    filter: grayscale(100%);
-    transition: filter 0.4s ease, transform 0.4s ease;
-}
-
-.cart-item:hover .book-image {
-    filter: grayscale(0%);
-    transform: scale(1.05);
-}
-
-.book-discount-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: #ff4444;
-    color: var(--white);
-    padding: 0.3rem 0.7rem;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    box-shadow: var(--shadow-sm);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: var(--transition);
-    z-index: 3;
 }
 
-.book-discount-badge i {
-    margin-right: 0.3rem;
+.product-details:hover .book-image {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.cart-item:hover .book-discount-badge {
-    transform: scale(1.1);
-}
-
-.book-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3));
-    border-radius: 6px;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    z-index: 2;
-}
-
-.cart-item:hover .book-overlay {
-    opacity: 1;
-}
-
-.cart-item-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-}
-
-.book-title {
-    font-size: 1.25rem;
-    font-weight: 600;
+.product-details span {
+    font-size: 0.95rem;
     color: var(--black);
-    margin-bottom: 0.3rem;
-    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.book-title i {
-    margin-right: 0.5rem;
-}
-
-.book-title:hover {
-    color: var(--gray-dark);
-}
-
-.book-author {
-    color: var(--gray);
-    font-size: 0.85rem;
-    font-style: italic;
-}
-
-.book-author i {
-    margin-right: 0.5rem;
-}
-
-.cart-item-details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--gray);
-}
-
-.cart-item-details p i {
-    margin-right: 0.5rem;
-}
-
-.cart-item-actions {
-    display: flex;
-    gap: 0.7rem;
-    margin-top: 0.5rem;
-}
-
-.action-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--white);
-    border: 1.5px solid var(--gray-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--transition);
-    color: var(--gray);
-}
-
-.action-btn:hover {
-    background: var(--black);
-    color: var(--white);
-    transform: scale(1.1);
-}
-
-.cart-sidebar {
-    max-width: 380px;
-}
-
-.cart-summary {
-    background: var(--white);
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-}
-
-.cart-summary:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-}
-
-.cart-summary h4 {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--black);
-    margin-bottom: 1.2rem;
-}
-
-.cart-summary h4 i {
-    margin-right: 0.5rem;
-}
-
-.summary-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    margin-bottom: 1.5rem;
-}
-
-.summary-item {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.95rem;
-    color: var(--gray);
-}
-
-.summary-item i {
-    margin-right: 0.5rem;
-}
-
-.summary-item.total {
-    font-weight: 600;
-    color: var(--black);
-    border-top: 1px solid var(--gray-light);
-    padding-top: 0.8rem;
-}
-
-.summary-actions {
+.quantity-cell {
+    font-weight: 500;
     text-align: center;
 }
 
-.empty-cart {
+.price-cell {
+    font-weight: 500;
+    color: var(--black);
+    text-align: right;
+}
+
+.no-items {
+    font-style: italic;
+    color: var(--gray);
+    text-align: center;
+}
+
+.no-items i {
+    margin-right: 0.5rem;
+}
+
+.empty-orders {
     text-align: center;
     padding: 2rem;
     background: var(--white);
@@ -797,17 +714,17 @@ body {
     box-shadow: var(--shadow-sm);
 }
 
-.empty-cart p {
+.empty-orders p {
     font-size: 1.1rem;
     color: var(--gray);
     margin-bottom: 1.5rem;
 }
 
-.empty-cart p i {
+.empty-orders p i {
     margin-right: 0.5rem;
 }
 
-/* Footer Styles */
+/* Footer Styles (unchanged) */
 .site-footer {
     background: var(--black);
     color: var(--white);
@@ -928,7 +845,7 @@ body {
     color: var(--white);
 }
 
-/* Back to Top Button */
+/* Back to Top Button (unchanged) */
 .back-to-top {
     position: fixed;
     bottom: 2rem;
@@ -959,7 +876,7 @@ body {
     transform: scale(1.1);
 }
 
-/* Animations */
+/* Animations (unchanged) */
 @keyframes ripple {
     to {
         transform: scale(4);
@@ -986,13 +903,34 @@ body {
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-    .cart-grid {
-        grid-template-columns: 1fr;
+    .orders-table {
+        font-size: 0.9rem;
     }
 
-    .cart-sidebar {
-        max-width: 100%;
-        margin-top: 2rem;
+    .product-details span {
+        max-width: 200px;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 1rem 1.2rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .orders-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        min-width: 120px;
+    }
+
+    .product-details span {
+        max-width: 150px;
     }
 }
 
@@ -1008,13 +946,22 @@ body {
         gap: 1.2rem;
     }
 
-    .cart-item {
-        flex-direction: column;
-        text-align: center;
+    .orders-table {
+        font-size: 0.85rem;
     }
 
-    .cart-item-image-wrapper {
-        margin: 0 auto;
+    .orders-table th,
+    .orders-table td {
+        padding: 0.8rem 1rem;
+    }
+
+    .book-image {
+        width: 40px;
+        height: 60px;
+    }
+
+    .product-details span {
+        max-width: 120px;
     }
 
     .footer-content {
@@ -1037,13 +984,70 @@ body {
         font-size: 2rem;
     }
 
-    .cart-item-image-wrapper {
-        width: 120px;
-        height: 180px;
+    .orders-table {
+        display: block;
     }
 
-    .book-title {
-        font-size: 1rem;
+    .orders-table thead {
+        display: none; /* Hide headers on small screens */
+    }
+
+    .orders-table tbody,
+    .orders-table tr,
+    .orders-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .orders-table tr {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        border: 1px solid var(--gray-light);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .orders-table td {
+        border: none;
+        padding: 0.5rem 0;
+        position: relative;
+        text-align: left;
+    }
+
+    .orders-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--black);
+        display: inline-block;
+        width: 40%;
+        padding-right: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .order-id::before { content: "Commande"; }
+    .status-cell::before { content: "Statut"; }
+    .total-cell::before { content: "Total"; }
+    .product-info::before { content: "Produit"; }
+    .quantity-cell::before { content: "Quantité"; }
+    .price-cell::before { content: "Prix"; }
+    .no-items::before { content: none; }
+
+    .product-details {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .product-details span {
+        max-width: 100%;
+    }
+
+    .orders-table td[rowspan] {
+        display: none; /* Hide rowspan cells in mobile view */
+    }
+
+    .no-items {
+        text-align: left;
     }
 
     .footer-links {
@@ -1056,7 +1060,7 @@ body {
 {% block javascripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Search functionality
+    // Search functionality (unchanged)
     const searchInput = document.querySelector('.search-input');
     if (searchInput) {
         searchInput.addEventListener('focus', function() {
@@ -1072,18 +1076,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Lazy load images
+    // Lazy load images (updated to handle book-image)
     const images = document.querySelectorAll('.book-image');
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const img = entry.target;
-                    img.src = img.dataset.src;
+                    img.src = img.dataset.src || 'https://placehold.co/50x75/0D0D0D/FFFFFF/png?text=Image+Indisponible';
                     img.classList.add('loaded');
-                    img.onerror = () => {
-                        img.src = 'https://placehold.co/180x270/0D0D0D/FFFFFF/png?text=Image+Indisponible';
-                    };
                     observer.unobserve(img);
                 }
             });
@@ -1098,16 +1099,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     } else {
         images.forEach(img => {
-            img.src = img.dataset.src;
+            img.src = img.dataset.src || 'https://placehold.co/50x75/0D0D0D/FFFFFF/png?text=Image+Indisponible';
             img.classList.add('loaded');
-            img.onerror = () => {
-                img.src = 'https://placehold.co/180x270/0D0D0D/FFFFFF/png?text=Image+Indisponible';
-            };
         });
     }
 
-    // Ripple effect on buttons
-    document.querySelectorAll('.btn, .action-btn').forEach(btn => {
+    // Ripple effect on buttons (unchanged)
+    document.querySelectorAll('.btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             const ripple = document.createElement('span');
             ripple.classList.add('ripple');
@@ -1121,7 +1119,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Back to top button
+    // Back to top button (unchanged)
     const backToTop = document.querySelector('.back-to-top');
     window.addEventListener('scroll', function() {
         if (window.scrollY > 300) {

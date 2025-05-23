@@ -6,6 +6,7 @@ use App\Entity\Livre;
 use App\Form\LivreForm;
 use App\Repository\LivreRepository;
 use App\Repository\OrderRepository;
+use App\Repository\OrderItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +17,8 @@ use Symfony\Component\Routing\Attribute\Route;
 final class LivreController extends AbstractController
 {
     public function __construct(
-        private readonly LivreRepository $livreRepository
+        private readonly LivreRepository $livreRepository,
+        private readonly OrderItemRepository $orderItemRepository
     ) {
     }
 
@@ -36,6 +38,13 @@ final class LivreController extends AbstractController
 
         $livres = $queryBuilder->getQuery()->getResult();
         $orders = $orderRepository->findAll();
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('livre/_book_list.html.twig', [
+                'livres' => $livres,
+                'search' => $search,
+            ]);
+        }
 
         return $this->render('livre/index.html.twig', [
             'livres' => $livres,
@@ -94,15 +103,23 @@ final class LivreController extends AbstractController
     public function delete(Request $request, Livre $livre, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$livre->getId(), $request->request->get('_token'))) {
+            // Find order items associated with the book
+            $orderItems = $this->orderItemRepository->findBy(['product' => $livre]);
+
+            // Remove the order items
+            foreach ($orderItems as $orderItem) {
+                $entityManager->remove($orderItem);
+            }
+
             $entityManager->remove($livre);
             $entityManager->flush();
-            
-            // Ajoutez un message flash pour confirmer la suppression
+
+            // Add a flash message to confirm the deletion
             $this->addFlash('success', 'Le livre a été supprimé avec succès.');
         } else {
             $this->addFlash('error', 'Jeton CSRF invalide.');
         }
-    
+
         return $this->redirectToRoute('app_livre_index');
     }
 

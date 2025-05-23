@@ -11,7 +11,7 @@
                         <a href="{{ path('app_livre_edit', {'id': livre.id}) }}" class="btn btn-outline-primary" title="Edit">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <form method="post" action="{{ path('app_livre_delete', {'id': livre.id}) }}" onsubmit="return confirmDelete(event, 'delete-form-{{ livre.id }}');" class="d-inline">
+<form method="post" action="{{ path('app_livre_delete', {'id': livre.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ livre.id) }}">
                             <button class="btn btn-outline-danger" title="Delete">
                                 <i class="fas fa-trash"></i>
@@ -24,6 +24,21 @@
                     <span class="mx-2">•</span>
                     <i class="fas fa-calendar me-1"></i>{{ livre.publishedAt ? livre.publishedAt|date('d M Y') : 'Not published' }}
                 </div>
+                {% if livre.publicationYear %}
+                    <div class="book-meta"><strong>Année:</strong> {{ livre.publicationYear }}</div>
+                {% endif %}
+                {% if livre.genre %}
+                    <div class="book-meta"><strong>Genre:</strong> {{ livre.genre }}</div>
+                {% endif %}
+                {% if livre.language %}
+                    <div class="book-meta"><strong>Langue:</strong> {{ livre.language }}</div>
+                {% endif %}
+                {% if livre.publisher %}
+                    <div class="book-meta"><strong>Éditeur:</strong> {{ livre.publisher }}</div>
+                {% endif %}
+                {% if livre.numberOfPages %}
+                    <div class="book-meta"><strong>Pages:</strong> {{ livre.numberOfPages }}</div>
+                {% endif %}
                 <div class="book-description">
                     {{ livre.description }}
                 </div>
@@ -39,4 +54,4 @@
             <i class="fas fa-plus me-2"></i>Add a book
         </a>
     </div>
-{% endif %} 
+{% endif %}

@@ -1,9 +1,856 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Order Success!{% endblock %}
+{% block title %}Commande Confirmée - MiniBiblio{% endblock %}
 
 {% block body %}
-    <h1>Your order has been placed successfully!</h1>
+<!-- Header -->
+<header class="site-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <h1>MiniBiblio</h1>
+                <p class="tagline">Œuvres d'élite, sélection d'élite</p>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="{{ path('homepage') }}">Accueil</a></li>
+                    <li><a href="#">Livres</a></li>
+                    <li><a href="#">Catégories</a></li>
+                    <li><a href="#">Nouveautés</a></li>
+                    <li><a href="{{ path('app_cart') }}">Panier <span class="cart-badge">{{ totalQuantity|default(0) }}</span></a></li>
+                </ul>
+            </nav>
+            <div class="header-search">
+                <div class="search-container">
+                    <input type="text" placeholder="Trouver un chef-d'œuvre..." class="search-input">
+                    <button class="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="header-actions">
+                {% if app.user %}
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="user-name" title="{{ app.user.email }}">{{ app.user.email|split('@')[0]|capitalize }}</span>
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline" data-tooltip="Déconnexion">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-outline">Connexion</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-primary">Inscription</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
 
-    <p>Thank you for your order. We will process it as soon as possible.</p>
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+        <!-- Order Success Section -->
+        <section class="order-success-section">
+            <div class="section-header">
+                <h3><i class="fas fa-check-circle"></i> Commande Confirmée !</h3>
+                <p>Votre commande a été passée avec succès.</p>
+                <div class="shelf-decoration"></div>
+            </div>
+            <div class="order-success-content">
+                <div class="success-message">
+                    <p><i class="fas fa-thumbs-up"></i> Merci pour votre achat ! Nous traiterons votre commande dans les plus brefs délais.</p>
+                    <p><i class="fas fa-envelope"></i> Un e-mail de confirmation a été envoyé à <strong>{{ app.user.email|default('votre adresse e-mail') }}</strong>.</p>
+                    {% if orderId is defined %}
+                        <p><i class="fas fa-receipt"></i> Numéro de commande : <strong>#{{ orderId }}</strong></p>
+                    {% endif %}
+                </div>
+                <div class="order-success-actions">
+                    <a href="{{ path('homepage') }}" class="btn btn-primary btn-large">
+                        <i class="fas fa-book-open"></i> Continuer à explorer
+                    </a>
+                    {% if app.user %}
+                        <a href="{{ path('app_user_orders') }}" class="btn btn-outline2 btn-large">
+                            <i class="fas fa-list-alt"></i> Voir mes commandes
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>MiniBiblio</h3>
+                <p>Œuvres d'élite, sélection d'élite</p>
+                <div class="social-links">
+                    <a href="#" data-tooltip="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" data-tooltip="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" data-tooltip="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" data-tooltip="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li><a href="#">Accueil</a></li>
+                        <li><a href="#">Livres</a></li>
+                        <li><a href="#">Catégories</a></li>
+                        <li><a href="#">Nouveautés</a></li>
+                        <li><a href="#">À propos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Conditions d'utilisation</a></li>
+                        <li><a href="#">Politique de confidentialité</a></li>
+                        <li><a href="#">Aide</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Abonnement Premium</a></li>
+                        <li><a href="#">Programme de fidélité</a></li>
+                        <li><a href="#">Cartes Cadeaux</a></li>
+                        <li><a href="#">Événements</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© {{ "now"|date("Y") }} MiniBiblio. Tous droits réservés.</p>
+            <div class="payment-methods">
+                <i class="fab fa-cc-visa" data-tooltip="Visa"></i>
+                <i class="fab fa-cc-mastercard" data-tooltip="Mastercard"></i>
+                <i class="fab fa-cc-paypal" data-tooltip="PayPal"></i>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Back to Top Button -->
+<button class="back-to-top" data-tooltip="Retour en haut">
+    <i class="fas fa-chevron-up"></i>
+</button>
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+/* Base Styles (Inherited from MiniBiblio Theme) */
+:root {
+    --black: #0D0D0D;
+    --white: #FFFFFF;
+    --gray-dark: #262626;
+    --gray: #595959;
+    --gray-light: #A6A6A6;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.12);
+    --shadow-md: 0 6px 16px rgba(0,0,0,0.18);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.22);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --border-radius: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Garamond', 'Georgia', serif;
+    line-height: 1.75;
+    color: var(--black);
+    background: var(--white);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1.8rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    text-decoration: none;
+    font-size: 0.95rem;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: 0.5s;
+    z-index: -1;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: var(--black);
+    color: var(--white);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    background: var(--gray-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--white);
+    color: var(--white);
+}
+
+.btn-outline:hover {
+    background: var(--white);
+    color: var(--black);
+    transform: translateY(-2px);
+}
+
+.btn-outline2 {
+    background: transparent;
+    border: 1.5px solid var(--black);
+    color: var(--black);
+}
+
+.btn-outline2:hover {
+    background: var(--black);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+.btn-large {
+    padding: 1.1rem 2.4rem;
+    font-size: 1rem;
+}
+
+/* Tooltip Styles */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, 8px);
+    background: var(--black);
+    color: var(--white);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    z-index: 10;
+    pointer-events: none;
+}
+
+[data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 4px);
+}
+
+/* Header Styles */
+.site-header {
+    background: var(--black);
+    padding: 1.8rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(12px);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2.2rem;
+}
+
+.logo h1 {
+    color: var(--white);
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.tagline {
+    color: var(--gray-light);
+    font-size: 0.85rem;
+    font-style: italic;
+    letter-spacing: 0.6px;
+    margin-top: 0.2rem;
+}
+
+.main-nav ul {
+    display: flex;
+    gap: 1.8rem;
+    list-style: none;
+}
+
+.main-nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    position: relative;
+    transition: var(--transition);
+}
+
+.main-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: var(--white);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease;
+}
+
+.main-nav a:hover::after,
+.main-nav a.active::after {
+    transform: scaleX(1);
+}
+
+.cart-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: var(--gray-dark);
+    color: var(--white);
+    border-radius: 50%;
+    font-size: 0.75rem;
+    margin-left: 0.4rem;
+    transition: var(--transition);
+}
+
+.main-nav a:hover .cart-badge {
+    background: var(--white);
+    color: var(--black);
+}
+
+.header-search {
+    flex: 1;
+    max-width: 380px;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1.1rem;
+    padding-right: 2.8rem;
+    border: 1.5px solid var(--gray-light);
+    border-radius: var(--border-radius);
+    background: var(--white);
+    color: var(--black);
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.search-input::placeholder {
+    color: var(--gray);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--black);
+    box-shadow: var(--shadow-sm);
+    transform: scale(1.01);
+}
+
+.search-button {
+    position: absolute;
+    right: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.search-button:hover {
+    color: var(--black);
+    transform: translateY(-50%) scale(1.15);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--black);
+    padding: 0.7rem 1.3rem;
+    border-radius: 24px;
+    box-shadow: var(--shadow-sm);
+    color: var(--white);
+    font-size: 0.97rem;
+    font-weight: 500;
+    transition: var(--transition);
+    border: 1.5px solid var(--gray-dark);
+    position: relative;
+}
+
+.user-info i {
+    font-size: 1.15rem;
+    color: var(--white);
+    background: var(--gray-dark);
+    border-radius: 50%;
+    padding: 0.35rem;
+    margin-right: 0.2rem;
+    transition: var(--transition);
+}
+
+.user-info .user-name {
+    color: var(--white);
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    margin-right: 0.7rem;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-info .btn-outline {
+    border-color: var(--white);
+    color: var(--white);
+    background: transparent;
+    padding: 0.4rem 1.1rem;
+    font-size: 0.92rem;
+    margin-left: 0.3rem;
+}
+
+.user-info .btn-outline:hover {
+    background: var(--white);
+    color: var(--black);
+}
+
+/* Order Success Section */
+.order-success-section {
+    margin: 4rem 0;
+    text-align: center;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+}
+
+.section-header h3 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 0.6rem;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+}
+
+.section-header h3 i {
+    margin-right: 0.5rem;
+    color: #28a745; /* Green for success */
+}
+
+.section-header p {
+    color: var(--gray);
+    font-size: 1.1rem;
+    max-width: 650px;
+    margin: 0 auto;
+    letter-spacing: 0.3px;
+}
+
+.shelf-decoration {
+    width: 100px;
+    height: 2px;
+    background: var(--black);
+    margin: 1.8rem auto;
+    position: relative;
+}
+
+.shelf-decoration::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 16px;
+    background: var(--black);
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.order-success-content {
+    max-width: 750px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.order-success-content:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.success-message {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: 1.1rem;
+    color: var(--gray);
+    margin-bottom: 2rem;
+}
+
+.success-message p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.success-message i {
+    color: var(--black);
+}
+
+.success-message strong {
+    color: var(--black);
+    font-weight: 600;
+}
+
+.order-success-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+}
+
+/* Footer Styles */
+.site-footer {
+    background: var(--black);
+    color: var(--white);
+    padding: 4.5rem 0 2.5rem;
+    position: relative;
+}
+
+.site-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+    opacity: 0.4;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3.5rem;
+}
+
+.footer-logo h3 {
+    font-size: 2.1rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    letter-spacing: 1.1px;
+}
+
+.footer-logo p {
+    color: var(--gray-light);
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+}
+
+.social-links {
+    display: flex;
+    gap: 1.2rem;
+    margin-top: 1.8rem;
+}
+
+.social-links a {
+    width: 44px;
+    height: 44px;
+    background: var(--gray-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.social-links a:hover {
+    background: var(--white);
+    color: var(--black);
+    transform: scale(1.08);
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+}
+
+.footer-column h4 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 1.8rem;
+    color: var(--white);
+    letter-spacing: 0.5px;
+}
+
+.footer-column ul {
+    list-style: none;
+}
+
+.footer-column li {
+    margin-bottom: 0.9rem;
+}
+
+.footer-column a {
+    color: var(--gray-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.footer-column a:hover {
+    color: var(--white);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--gray-dark);
+    font-size: 0.9rem;
+}
+
+.payment-methods {
+    display: flex;
+    gap: 1.2rem;
+}
+
+.payment-methods i {
+    font-size: 1.8rem;
+    color: var(--gray-light);
+    transition: var(--transition);
+}
+
+.payment-methods i:hover {
+    color: var(--white);
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 48px;
+    height: 48px;
+    background: var(--black);
+    color: var(--white);
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background: var(--gray-dark);
+    transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::after {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 1.8rem;
+    }
+
+    .main-nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.2rem;
+    }
+
+    .order-success-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-links {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        gap: 1.2rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .section-header h3 {
+        font-size: 2rem;
+    }
+
+    .order-success-content {
+        padding: 1.5rem;
+    }
+
+    .success-message {
+        font-size: 1rem;
+    }
+
+    .footer-links {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.querySelector('.search-input');
+    if (searchInput) {
+        searchInput.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+            this.parentElement.style.transform = 'scale(1.02)';
+            this.parentElement.style.boxShadow = '0 4px 12px rgba(0,0,0,0.18)';
+        });
+
+        searchInput.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+            this.parentElement.style.transform = 'scale(1)';
+            this.parentElement.style.boxShadow = 'none';
+        });
+    }
+
+    // Ripple effect on buttons
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = `${size}px`;
+            ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+            ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+
+    // Back to top button
+    const backToTop = document.querySelector('.back-to-top');
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    backToTop.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+});
+</script>
 {% endblock %}

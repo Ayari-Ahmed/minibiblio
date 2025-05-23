@@ -28,7 +28,9 @@ class CartController extends AbstractController
                     'livre' => $livre,
                     'quantity' => $quantity
                 ];
-                $total += $livre->getPrice() * $quantity;
+                $itemTotal = $livre->getPrice() * $quantity;
+                $discount = $livre->getDiscount() ? $itemTotal * ($livre->getDiscount() / 100) : 0;
+                $total += $itemTotal - $discount;
                 $totalQuantity += $quantity;
             }
         }
@@ -62,11 +64,7 @@ class CartController extends AbstractController
             $totalQuantity += $qty;
         }
 
-        return $this->json([
-            'success' => true,
-            'message' => 'Book added to cart!',
-            'totalQuantity' => $totalQuantity,
-        ]);
+        return $this->redirectToRoute('app_cart');
     }
 
     #[Route('/cart/remove/{id}', name: 'cart_remove')]

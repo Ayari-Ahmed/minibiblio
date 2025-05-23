@@ -72,12 +72,22 @@
                                     <h4 class="book-title" data-tooltip="{{ item.livre.title }}">{{ item.livre.title }}</h4>
                                     <p class="book-author">par {{ item.livre.author }}</p>
                                     <div class="cart-item-meta">
-                                        <span class="meta-item">
-                                            <i class="fas fa-euro-sign"></i> {{ item.livre.price|number_format(2) }}
-                                        </span>
-                                    </div>
-                                    <form action="{{ path('cart_update', {'id': item.livre.id}) }}" method="post" class="cart-quantity-form">
-                                        <label for="quantity-{{ item.livre.id }}" class="quantity-label">Quantité:</label>
+                                         <span class="meta-item">
+                                             {% if item.livre.discount %}
+                                                 <i class="fas fa-euro-sign"></i> <del>{{ item.livre.price|number_format(2) }}</del>
+                                                 <span class="discount">
+                                                     - {{item.livre.discount }}%
+                                                 </span>
+                                                 <i class="fas fa-euro-sign"></i> {{ (item.livre.price * (1 - (item.livre.discount / 100)))|number_format(2) }}
+                                                 <br/>
+                                                 <small>Total: €{{ ((item.livre.price * (1 - (item.livre.discount / 100)))) * item.quantity|number_format(2) }}</small>
+                                             {% else %}
+                                                 <i class="fas fa-euro-sign"></i> {{ item.livre.price|number_format(2) }}
+                                             {% endif %}
+                                         </span>
+                                     </div>
+                                     <form action="{{ path('cart_update', {'id': item.livre.id}) }}" method="post" class="cart-quantity-form">
+                                         <label for="quantity-{{ item.livre.id }}" class="quantity-label">Quantité:</label>
                                         <div class="quantity-control">
                                             <button type="button" class="quantity-btn minus" onclick="this.parentElement.querySelector('input').value = Math.max(1, parseInt(this.parentElement.querySelector('input').value) - 1); this.form.submit();">
                                                 <i class="fas fa-minus"></i>
@@ -1018,7 +1028,7 @@ body {
     background: var(--gray-dark);
     border-radius: 50%;
     display: flex;
-    align-items: center;
+align-items: center;
     justify-content: center;
     color: var(--white);
     text-decoration: none;
@@ -1330,7 +1340,7 @@ function showAdminErrorModal() {
         modalContent.style.transform = 'translateY(-50px)';
         modalContent.style.opacity = '0';
         setTimeout(() => {
-            window.location.href = '/';
+            window.location.href = '/cart';
         }, 400);
     };
 
@@ -1484,3 +1494,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
+
+

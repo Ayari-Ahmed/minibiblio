@@ -375,7 +375,7 @@
 
                 searchTimeout = setTimeout(() => {
                     const searchTerm = this.value.trim();
-                    const url = new URL(window.location.href);
+                    const url = new URL("{{ path('app_livre_index') }}");
                     url.searchParams.set('search', searchTerm);
 
                     fetch(url.toString(), {
@@ -387,6 +387,15 @@
                     .then(html => {
                         bookList.innerHTML = html;
                         searchLoading.style.display = 'none';
+                        // Re-attach event listeners to delete buttons
+                        setTimeout(() => {
+                            const deleteForms = bookList.querySelectorAll('form[method="post"]');
+                            deleteForms.forEach(form => {
+                                form.addEventListener('submit', function(event) {
+                                    confirmDelete(event, this.id);
+                                });
+                            });
+                        }, 0);
                     })
                     .catch(error => {
                         console.error('Error:', error);
@@ -421,7 +430,12 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById(formId).submit();
+                    const form = document.getElementById(formId);
+                    if (form) {
+                        form.submit();
+                    } else {
+                        console.error('Form with ID ' + formId + ' not found.');
+                    }
                 }
             });
         }
