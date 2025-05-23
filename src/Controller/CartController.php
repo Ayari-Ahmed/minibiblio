@@ -40,9 +40,12 @@ class CartController extends AbstractController
         ]);
     }
 
-    #[Route('/cart/add/{id}', name: 'cart_add')]
-    public function add($id, SessionInterface $session): Response
-    {
+    #[Route('/cart/add/{id}', name: 'cart_add', methods: ['POST'])]
+    public function add(
+        $id,
+        SessionInterface $session,
+        LivreRepository $livreRepository
+    ): Response {
         $cart = $session->get('cart', []);
 
         if (!empty($cart[$id])) {
@@ -53,7 +56,17 @@ class CartController extends AbstractController
 
         $session->set('cart', $cart);
 
-        return $this->redirectToRoute('app_cart');
+        // Calculate total quantity
+        $totalQuantity = 0;
+        foreach ($cart as $qty) {
+            $totalQuantity += $qty;
+        }
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Book added to cart!',
+            'totalQuantity' => $totalQuantity,
+        ]);
     }
 
     #[Route('/cart/remove/{id}', name: 'cart_remove')]
