@@ -55,7 +55,7 @@ public function onAuthenticationSuccess(Request $request, TokenInterface $token,
         return new RedirectResponse($this->urlGenerator->generate('app_livre_index'));
     }
 
-    return new RedirectResponse($this->urlGenerator->generate('homepage'));
+    return new RedirectResponse($this->urlGenerator->generate('cart_checkout'));
     }
 
 

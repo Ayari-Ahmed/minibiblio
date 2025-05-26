@@ -46,7 +46,8 @@ class CartController extends AbstractController
     public function add(
         $id,
         SessionInterface $session,
-        LivreRepository $livreRepository
+        LivreRepository $livreRepository,
+        Request $request // Add the Request object
     ): Response {
         $cart = $session->get('cart', []);
 
@@ -64,17 +65,17 @@ class CartController extends AbstractController
             $totalQuantity += $qty;
         }
 
-        // Calculate total quantity
-        $totalQuantity = 0;
-        foreach ($cart as $qty) {
-            $totalQuantity += $qty;
+        // Check if it's an AJAX request
+        if ($request->isXmlHttpRequest()) {
+            return $this->json([
+                'success' => true,
+                'message' => 'Book added to cart successfully!',
+                'totalQuantity' => $totalQuantity,
+            ]);
+        } else {
+            // If not an AJAX request, redirect to the cart page
+            return $this->redirectToRoute('app_cart');
         }
-
-        return $this->json([
-            'success' => true,
-            'message' => 'Book added to cart successfully!',
-            'totalQuantity' => $totalQuantity,
-        ]);
     }
 
     #[Route('/cart/remove/{id}', name: 'cart_remove')]

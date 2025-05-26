@@ -53,7 +53,7 @@
         <!-- Checkout Section -->
         <section class="checkout-section">
             <div class="section-header">
-                <h3><i class="fas fa-shopping-cart"></i> Votre Panier</h3>
+                <h3><i class="fas fa-shopping-cart"></i> Votre Panier Finale</h3>
                 <p>Finalisez votre sélection d'œuvres d'élite</p>
                 <div class="shelf-decoration"></div>
             </div>
@@ -79,8 +79,8 @@
                                     <p class="book-author"><i class="fas fa-user-edit"></i> par {{ item.product.author }}</p>
                                     <div class="cart-item-details">
                                         <p><i class="fas fa-sort-numeric-up"></i> Quantité: {{ item.quantity }}</p>
-                                        <p><i class="fas fa-euro-sign"></i> Prix unitaire: €{{ item.product.price|number_format(2) }}</p>
-                                        <p><i class="fas fa-money-bill-wave"></i> Total: €{{ (item.product.price * item.quantity)|number_format(2) }}</p>
+                                        <p><i class="fas fa-money-bill-wave"></i> Prix unitaire: TND{{ item.product.price|number_format(2) }}</p>
+                                        <p><i class="fas fa-money-bill-wave"></i> Total: TND{{ (item.product.price * item.quantity)|number_format(2) }}</p>
                                     </div>
                                     <div class="cart-item-actions">
                                         <form action="{{ path('cart_remove', {'id': item.product.id}) }}" method="post">
@@ -104,11 +104,11 @@
                                 </div>
                                 <div class="summary-item">
                                     <span><i class="fas fa-tags"></i> Réduction:</span>
-                                    <span>- €{{ discount|number_format(2) }}</span>
+                                    <span>- TND{{ discount|number_format(2) }}</span>
                                 </div>
                                 <div class="summary-item total">
                                     <span><i class="fas fa-wallet"></i> Total:</span>
-                                    <span>€{{ total|number_format(2) }}</span>
+                                    <span>TND{{ total|number_format(2) }}</span>
                                 </div>
                             </div>
                             <div class="summary-actions">

@@ -75,15 +75,15 @@
                                     <div class="cart-item-meta">
                                          <span class="meta-item">
                                              {% if item.livre.discount %}
-                                                 <i class="fas fa-euro-sign"></i> <del>{{ item.livre.price|number_format(2) }}</del>
+                                                 <i class="fas fa-money-bill-wave"></i> <del>{{ item.livre.price|number_format(2) }}</del>
                                                  <span class="discount">
                                                      - {{item.livre.discount }}%
                                                  </span>
-                                                 <i class="fas fa-euro-sign"></i> {{ (item.livre.price * (1 - (item.livre.discount / 100)))|number_format(2) }}
+                                                 <i class="fas fa-money-bill-wave"></i> {{ (item.livre.price * (1 - (item.livre.discount / 100)))|number_format(2) }}
                                                  <br/>
-                                                 <small>Total: €{{ ((item.livre.price * (1 - (item.livre.discount / 100)))) * item.quantity|number_format(2) }}</small>
+                                                 <small>Total: TND{{ ((item.livre.price * (1 - (item.livre.discount / 100)))) * item.quantity|number_format(2) }}</small>
                                              {% else %}
-                                                 <i class="fas fa-euro-sign"></i> {{ item.livre.price|number_format(2) }}
+                                                 <i class="fas fa-money-bill-wave"></i> {{ item.livre.price|number_format(2) }}
                                              {% endif %}
                                          </span>
                                      </div>
@@ -133,7 +133,7 @@
                                 </div>
                                 <div class="summary-item total">
                                     <span>Total:</span>
-                                    <span>€{{ total|number_format(2) }}</span>
+                                    <span>{{ total|number_format(2) }} TND</span>
                                 </div>
                                 <div class="summary-item delivery-note">
                                     <span>Livraison estimée:</span>

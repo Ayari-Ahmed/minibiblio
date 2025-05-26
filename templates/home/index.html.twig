@@ -18,9 +18,24 @@
                     <li><a href="#">Catégories</a></li>
                     {% if app.user %}<li><a href="{{ path('app_user_orders') }}">Mes Ordres</a></li>
 {% endif %}
-                    <li><a href="/cart">Panier <span class="cart-badge">{{ totalQuantity|default(0) }}</span></a></li>
+                    <li><a href="#" id="cart-link">Panier <span class="cart-badge">{{ totalQuantity|default(0) }}</span></a></li>
                 </ul>
             </nav>
+            <div id="cart-slider">
+                <div class="cart-items">
+                    {% if cart %}
+                        {% for item in cart %}
+                            <div class="cart-item">
+                                <i class="fas fa-book"></i>
+                                <p>{{ item.product.title }} x {{ item.quantity }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p><i class="fas fa-shopping-cart"></i> Votre panier est vide.</p>
+                    {% endif %}
+                </div>
+                <a href="/cart" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> Voir le panier</a>
+            </div>
             <div class="header-search">
                 <div class="search-container">
                     <input type="text" placeholder="Trouver un chef-d'œuvre..." class="search-input">
@@ -447,6 +462,40 @@
 {% block stylesheets %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
+#cart-slider {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--white);
+    color: var(--black);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    width: 300px;
+    z-index: 1001;
+    display: none;
+}
+
+#cart-slider .cart-items {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+#cart-slider .cart-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+#cart-slider .cart-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
 /* Base Styles */
 :root {
     --black: #0D0D0D;
@@ -2069,6 +2118,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    const cartLink = document.getElementById('cart-link');
+    const cartSlider = document.getElementById('cart-slider');
+
+    cartLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        cartSlider.style.display = cartSlider.style.display === 'block' ? 'none' : 'block';
+    });
+    
     // Cart button form submission
     
 

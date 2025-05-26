@@ -17,7 +17,7 @@
                     <li><a href="#">Livres</a></li>
                     <li><a href="#">Catégories</a></li>
                     {% if app.user %}<li><a href="{{ path('app_user_orders') }}">Mes Ordres</a></li>
-{% endif %}
+                    {% endif %}
                     <li><a href="{{ path('app_cart') }}">Panier <span class="cart-badge">{{ totalQuantity|default(0) }}</span></a></li>
                 </ul>
             </nav>
@@ -65,7 +65,7 @@
                                 <th><i class="fas fa-receipt"></i> Commande</th>
                                 <th><i class="fas fa-calendar-alt"></i> Date</th>
                                 <th><i class="fas fa-info-circle"></i> Statut</th>
-                                <th><i class="fas fa-euro-sign"></i> Total</th>
+                                <th><i class="fas fa-money-bill-wave"></i> Total</th>
                                 <th><i class="fas fa-book"></i> Produit</th>
                                 <th><i class="fas fa-sort-numeric-up"></i> Quantité</th>
                                 <th><i class="fas fa-money-bill-wave"></i> Prix</th>
@@ -83,7 +83,7 @@
                                     {{ order.status|capitalize }}
                                     
                                  </td>
-                                 <td rowspan="{{ order.items|length }}" class="total-cell">€{{ order.totalPrice|number_format(2) }}</td>
+                                 <td rowspan="{{ order.items|length }}" class="total-cell">{{ order.totalPrice|number_format(2) }}TND</td>
                              {% endif %}
                              <td class="product-info">
                                                 <div class="product-details" data-tooltip="{{ item.title|default('Produit') }}">
@@ -96,7 +96,7 @@
                                                 </div>
                                             </td>
                                             <td class="quantity-cell">{{ item.quantity }}</td>
-                                            <td class="price-cell">€{{ item.price|number_format(2) }}</td>
+                                            <td class="price-cell">{{ item.price|number_format(2) }}TND</td>
                                         </tr>
                                     {% endfor %}
                                 {% else %}
@@ -104,7 +104,7 @@
                                         <td class="order-id">{{ order.id }}</td>
                                         <td>{{ order.createdAt ? order.createdAt|date('d/m/Y H:i') : '-' }}</td>
                                         <td class="status-cell">{{ order.status|capitalize }}</td>
-                                        <td class="total-cell">€{{ order.totalPrice|number_format(2) }}</td>
+                                        <td class="total-cell">{{ order.totalPrice|number_format(2) }}TND</td>
                                         <td colspan="3" class="no-items"><i class="fas fa-exclamation-circle"></i> Aucun article dans cette commande</td>
                                     </tr>
                                 {% endif %}
